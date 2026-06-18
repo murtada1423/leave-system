@@ -60,6 +60,7 @@ export default function PendingRequestsTable({
             <p className="text-sm">لا توجد طلبات معلقة</p>
           </div>
         ) : (
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -105,6 +106,7 @@ export default function PendingRequestsTable({
               ))}
             </TableBody>
           </Table>
+          </div>
         )}
       </CardContent>
     </Card>

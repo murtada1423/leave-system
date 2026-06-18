@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { LayoutDashboard, Users, LogOut, Info, X, Phone, Code } from 'lucide-react'
+import { LayoutDashboard, Users, LogOut, Info, X, Phone, Code, Menu } from 'lucide-react'
 import { Button } from './ui/button'
 
 interface SidebarProps {
@@ -12,10 +12,30 @@ interface SidebarProps {
 
 export default function Sidebar({ fullName, role, onLogout, activeView, onNavigate }: SidebarProps) {
   const [aboutOpen, setAboutOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  const closeSidebar = () => setSidebarOpen(false)
+  const handleNav = (view: string) => { onNavigate(view); closeSidebar() }
 
   return (
     <>
-      <aside className="w-[var(--sidebar-width)] h-screen bg-white/70 backdrop-blur-2xl border-l border-slate-200 flex flex-col fixed right-0 top-0">
+      {/* Mobile hamburger */}
+      <button
+        onClick={() => setSidebarOpen(true)}
+        className="fixed top-4 left-4 z-40 md:hidden w-10 h-10 rounded-2xl bg-white/80 backdrop-blur-md border border-slate-200 shadow-sm flex items-center justify-center cursor-pointer"
+      >
+        <Menu className="w-5 h-5 text-slate-700" />
+      </button>
+
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-black/30 backdrop-blur-sm md:hidden"
+          onClick={closeSidebar}
+        />
+      )}
+
+      <aside className={`w-[var(--sidebar-width)] h-screen bg-white/70 backdrop-blur-2xl border-l border-slate-200 flex flex-col fixed right-0 top-0 z-40 transition-transform duration-300 md:translate-x-0 ${sidebarOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="p-6 border-b border-slate-100">
           <h1 className="text-xl font-bold text-slate-900">نظام إدارة الإجازات</h1>
         </div>
@@ -32,7 +52,7 @@ export default function Sidebar({ fullName, role, onLogout, activeView, onNaviga
             <Button
               variant="ghost"
               className={`w-full justify-start text-slate-700 hover:bg-slate-100 ${activeView === 'dashboard' ? 'bg-slate-100 font-semibold' : ''}`}
-              onClick={() => onNavigate('dashboard')}
+              onClick={() => handleNav('dashboard')}
             >
               <LayoutDashboard className="w-5 h-5 ml-2.5" />
               لوحة التحكم
@@ -40,7 +60,7 @@ export default function Sidebar({ fullName, role, onLogout, activeView, onNaviga
             <Button
               variant="ghost"
               className={`w-full justify-start text-slate-700 hover:bg-slate-100 ${activeView === 'employees' ? 'bg-slate-100 font-semibold' : ''}`}
-              onClick={() => onNavigate('employees')}
+              onClick={() => handleNav('employees')}
             >
               <Users className="w-5 h-5 ml-2.5" />
               سجل الموظفين

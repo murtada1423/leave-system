@@ -65,33 +65,35 @@ export default function EmployeeManagementView({ employees, loading, onRefresh }
 
   return (
     <>
-      <div className="flex flex-col h-[calc(100vh-48px)] overflow-hidden backdrop-blur-2xl bg-white/60 rounded-3xl border border-white/40 shadow-xl shadow-black/5 p-8">
+      <div className="flex flex-col h-[calc(100vh-48px)] overflow-hidden backdrop-blur-2xl bg-white/60 rounded-3xl border border-white/40 shadow-xl shadow-black/5 p-4 md:p-8">
         {/* Fixed header section */}
         <div className="shrink-0 space-y-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200">
+              <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200 shrink-0">
                 <Users className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-neutral-900">سجل الموظفين</h3>
-                <p className="text-sm text-neutral-500">إدارة جميع الموظفين المسجلين في النظام</p>
+                <h3 className="text-lg md:text-xl font-bold text-neutral-900">سجل الموظفين</h3>
+                <p className="text-xs md:text-sm text-neutral-500">إدارة جميع الموظفين المسجلين في النظام</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setLeaveModalOpen(true)}
-                className="h-11 px-5 rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-700 text-white font-medium text-sm hover:from-emerald-500 hover:to-emerald-600 transition cursor-pointer flex items-center gap-2 shadow-lg shadow-emerald-200"
+                className="h-11 px-4 md:px-5 rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-700 text-white font-medium text-sm hover:from-emerald-500 hover:to-emerald-600 transition cursor-pointer flex items-center gap-2 shadow-lg shadow-emerald-200"
               >
-                <CalendarPlus className="w-4 h-4" />
-                تسجيل إجازة جديدة
+                <CalendarPlus className="w-4 h-4 shrink-0" />
+                <span className="hidden sm:inline">تسجيل إجازة جديدة</span>
+                <span className="sm:hidden">إجازة</span>
               </button>
               <button
                 onClick={handleAdd}
-                className="h-11 px-5 rounded-2xl bg-gradient-to-br from-indigo-600 to-indigo-700 text-white font-medium text-sm hover:from-indigo-500 hover:to-indigo-600 transition cursor-pointer flex items-center gap-2 shadow-lg shadow-indigo-200"
+                className="h-11 px-4 md:px-5 rounded-2xl bg-gradient-to-br from-indigo-600 to-indigo-700 text-white font-medium text-sm hover:from-indigo-500 hover:to-indigo-600 transition cursor-pointer flex items-center gap-2 shadow-lg shadow-indigo-200"
               >
-                <Plus className="w-4 h-4" />
-                إضافة موظف جديد
+                <Plus className="w-4 h-4 shrink-0" />
+                <span className="hidden sm:inline">إضافة موظف جديد</span>
+                <span className="sm:hidden">إضافة</span>
               </button>
             </div>
           </div>

@@ -55,6 +55,7 @@ export default function LeaveHistory({ requests, loading }: LeaveHistoryProps) {
             <p className="text-sm">لا توجد إجازات مسجلة</p>
           </div>
         ) : (
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -83,6 +84,7 @@ export default function LeaveHistory({ requests, loading }: LeaveHistoryProps) {
               ))}
             </TableBody>
           </Table>
+          </div>
         )}
       </CardContent>
     </Card>

@@ -154,10 +154,10 @@ export default function EmployeeDashboard({ userId, onLogout }: EmployeeDashboar
     <div className="min-h-screen bg-neutral-50">
       <Sidebar fullName={profile.full_name} role={profile.role} onLogout={handleLogout} activeView="" onNavigate={() => {}} />
 
-      <main className="pr-[var(--sidebar-width)]">
-        <div className="max-w-4xl mx-auto p-6 space-y-6">
+      <main className="pr-0 md:pr-[var(--sidebar-width)]">
+        <div className="max-w-4xl mx-auto p-4 md:p-6 space-y-6">
           <div>
-            <h2 className="text-2xl font-bold text-neutral-900">
+            <h2 className="text-xl md:text-2xl font-bold text-neutral-900">
               مرحباً، {profile.full_name}
             </h2>
             <p className="text-neutral-500 mt-1">لوحة التحكم</p>

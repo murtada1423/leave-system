@@ -57,7 +57,7 @@ export default function LoginPage({ onLogin }: { onLogin?: () => void }) {
       </div>
 
       <div className="relative w-full max-w-md mx-4">
-        <div className="backdrop-blur-2xl bg-white/60 rounded-3xl border border-white/40 shadow-xl shadow-black/5 p-10 space-y-8">
+        <div className="backdrop-blur-2xl bg-white/60 rounded-3xl border border-white/40 shadow-xl shadow-black/5 p-6 md:p-10 space-y-8">
           <div className="text-center space-y-4">
             <div className="w-18 h-18 mx-auto bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200">
               <Calendar className="w-9 h-9 text-white" />

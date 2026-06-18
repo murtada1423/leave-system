@@ -124,7 +124,7 @@ export default function LeaveRequestForm({ onSubmit, daysBalance, hourlyBalance 
                   className="flex-1 h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 text-white text-sm font-medium hover:from-emerald-400 hover:to-emerald-500 transition cursor-pointer flex items-center justify-center gap-2 shadow-sm shadow-emerald-200"
                 >
                   <Calendar className="w-4 h-4" />
-                  إجازة اليوم الحالي
+                  اليوم
                 </button>
                 <button
                   type="button"
@@ -132,7 +132,7 @@ export default function LeaveRequestForm({ onSubmit, daysBalance, hourlyBalance 
                   className="flex-1 h-10 rounded-2xl bg-gradient-to-br from-sky-500 to-sky-600 text-white text-sm font-medium hover:from-sky-400 hover:to-sky-500 transition cursor-pointer flex items-center justify-center gap-2 shadow-sm shadow-sky-200"
                 >
                   <CalendarPlus className="w-4 h-4" />
-                  إجازة يوم غد
+                  غداً
                 </button>
               </div>
               <div className="space-y-2">
