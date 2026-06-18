@@ -1,0 +1,98 @@
+import { useEffect, useState } from 'react'
+import { type Session } from '@supabase/supabase-js'
+import { supabase } from './lib/supabase'
+import LoginPage from './components/LoginPage'
+import EmployeeDashboard from './components/EmployeeDashboard'
+import AdminDashboard from './components/AdminDashboard'
+
+interface Profile {
+  role: string
+  full_name?: string
+}
+
+export default function App() {
+  const [session, setSession] = useState<Session | null>(null)
+  const [profile, setProfile] = useState<Profile | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session: s } }) => {
+      if (s?.user) {
+        setSession(s)
+        fetchProfile(s.user.id)
+      } else {
+        setLoading(false)
+      }
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+      if (s?.user) {
+        setSession(s)
+        fetchProfile(s.user.id)
+      } else {
+        setSession(null)
+        setProfile(null)
+        setLoading(false)
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const fetchProfile = async (userId: string) => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('role, full_name')
+      .eq('id', userId)
+      .single()
+
+    if (data) {
+      setProfile(data)
+      setLoading(false)
+      return
+    }
+
+    if (error?.code === 'PGRST116') {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user?.user_metadata?.full_name && user?.user_metadata?.role) {
+        await supabase.from('profiles').insert({
+          id: userId,
+          full_name: user.user_metadata.full_name,
+          role: user.user_metadata.role,
+        })
+        setProfile({
+          role: user.user_metadata.role as string,
+          full_name: user.user_metadata.full_name as string,
+        })
+      }
+    }
+
+    setLoading(false)
+  }
+
+  const handleLogin = () => {
+    setLoading(true)
+    supabase.auth.getSession().then(({ data: { session: s } }) => {
+      if (s?.user) {
+        setSession(s)
+        fetchProfile(s.user.id)
+      }
+    })
+  }
+
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 via-white to-slate-50">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 border-[3px] border-indigo-600/30 border-t-indigo-600 rounded-full animate-spin" />
+          <p className="text-sm text-slate-400">جاري التحميل...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!session) return <LoginPage onLogin={handleLogin} />
+
+  if (profile?.role === 'admin') return <AdminDashboard userId={session.user.id} onLogout={() => supabase.auth.signOut()} />
+  return <EmployeeDashboard userId={session.user.id} onLogout={() => supabase.auth.signOut()} />
+}

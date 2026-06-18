@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+:root {
+  --sidebar-width: 260px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Rubik', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  direction: rtl;
+}
+
+.number {
+  font-variant-numeric: tabular-nums;
+}
