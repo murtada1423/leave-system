@@ -11,23 +11,23 @@ export default function MetricCards({ daysBalance, hourlyBalance }: MetricCardsP
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <Card>
         <CardContent className="p-6 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center shrink-0">
+          <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-500/20 flex items-center justify-center shrink-0">
             <Sun className="w-6 h-6 text-amber-500" />
           </div>
           <div>
-            <p className="text-sm text-slate-500">رصيد الإجازات (الأيام)</p>
-            <p className="text-3xl font-bold text-slate-900 number">{daysBalance}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">رصيد الإجازات (الأيام)</p>
+            <p className="text-3xl font-bold text-slate-900 dark:text-white number">{daysBalance}</p>
           </div>
         </CardContent>
       </Card>
       <Card>
         <CardContent className="p-6 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-sky-50 flex items-center justify-center shrink-0">
+          <div className="w-12 h-12 rounded-2xl bg-sky-50 dark:bg-sky-500/20 flex items-center justify-center shrink-0">
             <Clock className="w-6 h-6 text-sky-500" />
           </div>
           <div>
-            <p className="text-sm text-slate-500">رصيد الإجازات الزمنية (الساعات)</p>
-            <p className="text-3xl font-bold text-slate-900 number">{hourlyBalance}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">رصيد الإجازات الزمنية (الساعات)</p>
+            <p className="text-3xl font-bold text-slate-900 dark:text-white number">{hourlyBalance}</p>
           </div>
         </CardContent>
       </Card>

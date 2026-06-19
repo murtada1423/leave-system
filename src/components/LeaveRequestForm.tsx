@@ -121,7 +121,7 @@ export default function LeaveRequestForm({ onSubmit, daysBalance, hourlyBalance 
                 <button
                   type="button"
                   onClick={setTodayLeave}
-                  className="flex-1 h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 text-white text-sm font-medium hover:from-emerald-400 hover:to-emerald-500 transition cursor-pointer flex items-center justify-center gap-2 shadow-sm shadow-emerald-200"
+                  className="flex-1 h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 text-white text-sm font-medium hover:from-emerald-400 hover:to-emerald-500 transition cursor-pointer flex items-center justify-center gap-2 shadow-sm shadow-emerald-200 dark:shadow-emerald-900/30"
                 >
                   <Calendar className="w-4 h-4" />
                   اليوم
@@ -129,7 +129,7 @@ export default function LeaveRequestForm({ onSubmit, daysBalance, hourlyBalance 
                 <button
                   type="button"
                   onClick={setTomorrowLeave}
-                  className="flex-1 h-10 rounded-2xl bg-gradient-to-br from-sky-500 to-sky-600 text-white text-sm font-medium hover:from-sky-400 hover:to-sky-500 transition cursor-pointer flex items-center justify-center gap-2 shadow-sm shadow-sky-200"
+                  className="flex-1 h-10 rounded-2xl bg-gradient-to-br from-sky-500 to-sky-600 text-white text-sm font-medium hover:from-sky-400 hover:to-sky-500 transition cursor-pointer flex items-center justify-center gap-2 shadow-sm shadow-sky-200 dark:shadow-sky-900/30"
                 >
                   <CalendarPlus className="w-4 h-4" />
                   غداً
@@ -137,27 +137,29 @@ export default function LeaveRequestForm({ onSubmit, daysBalance, hourlyBalance 
               </div>
               <div className="space-y-2">
                 <Label htmlFor="start-date">تاريخ البدء</Label>
-                <Input
-                  id="start-date"
-                  type="date"
-                  dir="ltr"
-                  className="text-right w-full"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  required
-                />
+                <div dir="ltr">
+                  <Input
+                    id="start-date"
+                    type="date"
+                    className="w-full dark:[color-scheme:dark]"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    required
+                  />
+                </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="end-date">تاريخ الانتهاء</Label>
-                <Input
-                  id="end-date"
-                  type="date"
-                  dir="ltr"
-                  className="text-right w-full"
+                <div dir="ltr">
+                  <Input
+                    id="end-date"
+                    type="date"
+                    className="w-full dark:[color-scheme:dark]"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
                   required
                 />
+              </div>
               </div>
             </>
           )}
@@ -165,15 +167,16 @@ export default function LeaveRequestForm({ onSubmit, daysBalance, hourlyBalance 
           {isTimeLeave && (
             <div className="space-y-2">
               <Label htmlFor="single-date">تاريخ الإجازة</Label>
-              <Input
-                id="single-date"
-                type="date"
-                dir="ltr"
-                className="text-right w-full"
-                value={singleDate}
-                onChange={(e) => setSingleDate(e.target.value)}
-                required
-              />
+              <div dir="ltr">
+                <Input
+                  id="single-date"
+                  type="date"
+                  className="w-full dark:[color-scheme:dark]"
+                  value={singleDate}
+                  onChange={(e) => setSingleDate(e.target.value)}
+                  required
+                />
+              </div>
             </div>
           )}
 
@@ -228,7 +231,7 @@ export default function LeaveRequestForm({ onSubmit, daysBalance, hourlyBalance 
                     type="button"
                     onClick={() => setConfirmBorrow(false)}
                     disabled={submitting}
-                    className="h-9 px-4 rounded-xl bg-white/80 border border-neutral-200 text-neutral-700 text-xs font-medium hover:bg-white transition cursor-pointer disabled:opacity-50"
+                    className="h-9 px-4 rounded-xl bg-white/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-700 dark:text-slate-200 text-xs font-medium hover:bg-white transition cursor-pointer disabled:opacity-50"
                   >
                     إلغاء
                   </button>

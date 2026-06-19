@@ -136,7 +136,7 @@ export default function EmployeeDashboard({ userId, onLogout }: EmployeeDashboar
 
   if (loadingProfile) {
     return (
-      <div className="h-screen flex items-center justify-center text-neutral-500">
+      <div className="h-screen flex items-center justify-center text-neutral-500 dark:text-slate-400">
         جاري التحميل...
       </div>
     )
@@ -144,23 +144,23 @@ export default function EmployeeDashboard({ userId, onLogout }: EmployeeDashboar
 
   if (!profile) {
     return (
-      <div className="h-screen flex items-center justify-center text-neutral-500">
+      <div className="h-screen flex items-center justify-center text-neutral-500 dark:text-slate-400">
         يرجى تسجيل الدخول
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="min-h-screen bg-neutral-50 dark:bg-slate-950">
       <Sidebar fullName={profile.full_name} role={profile.role} onLogout={handleLogout} activeView="" onNavigate={() => {}} />
 
-      <main className="pr-0 md:pr-[var(--sidebar-width)]">
+      <main className="pr-0 md:pr-[var(--sidebar-width)] bg-neutral-50 dark:bg-slate-950 min-h-screen">
         <div className="max-w-4xl mx-auto p-4 md:p-6 space-y-6">
           <div>
-            <h2 className="text-xl md:text-2xl font-bold text-neutral-900">
-              مرحباً، {profile.full_name}
+            <h2 className="text-xl md:text-2xl font-bold text-neutral-900 dark:text-white">
+              {profile.full_name}
             </h2>
-            <p className="text-neutral-500 mt-1">لوحة التحكم</p>
+            <p className="text-neutral-500 dark:text-slate-400 mt-1">لوحة التحكم</p>
           </div>
 
           <MetricCards

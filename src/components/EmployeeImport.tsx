@@ -106,12 +106,12 @@ export default function EmployeeImport({ onImported }: { onImported?: () => void
   return (
     <div className="backdrop-blur-2xl bg-white/60 rounded-3xl border border-white/40 shadow-xl shadow-black/5 p-8 space-y-6">
       <div className="flex items-center gap-3">
-        <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-200">
+        <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-200 dark:shadow-emerald-900/30">
           <FileSpreadsheet className="w-6 h-6 text-white" />
         </div>
         <div>
-          <h3 className="text-xl font-bold text-neutral-900">إدارة الموظفين</h3>
-          <p className="text-sm text-neutral-500">استيراد موظفين جدد من ملف إكسل</p>
+          <h3 className="text-xl font-bold text-neutral-900 dark:text-white">إدارة الموظفين</h3>
+          <p className="text-sm text-neutral-500 dark:text-slate-400">استيراد موظفين جدد من ملف إكسل</p>
         </div>
       </div>
 
@@ -128,21 +128,21 @@ export default function EmployeeImport({ onImported }: { onImported?: () => void
         type="button"
         onClick={() => fileRef.current?.click()}
         disabled={importing}
-        className="w-full py-4 px-6 rounded-2xl border-2 border-dashed border-neutral-300 hover:border-emerald-400 bg-white/40 hover:bg-emerald-50/40 transition flex flex-col items-center justify-center gap-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group"
+        className="w-full py-4 px-6 rounded-2xl border-2 border-dashed border-neutral-300 dark:border-slate-600 hover:border-emerald-400 bg-white/40 dark:bg-slate-800/40 hover:bg-emerald-50/40 transition flex flex-col items-center justify-center gap-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group"
       >
         {importing ? (
           <>
             <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
-            <span className="text-sm text-neutral-600">{progress || 'جاري الاستيراد...'}</span>
+            <span className="text-sm text-neutral-600 dark:text-slate-300">{progress || 'جاري الاستيراد...'}</span>
           </>
         ) : (
           <>
-            <Upload className="w-8 h-8 text-neutral-400 group-hover:text-emerald-500 transition" />
+            <Upload className="w-8 h-8 text-neutral-400 dark:text-slate-500 group-hover:text-emerald-500 transition" />
             <div className="text-center">
-              <span className="text-sm font-medium text-neutral-700 group-hover:text-emerald-600 transition">
+              <span className="text-sm font-medium text-neutral-700 dark:text-slate-200 group-hover:text-emerald-600 transition">
                 استيراد الموظفين من ملف إكسل
               </span>
-              <p className="text-xs text-neutral-400 mt-1">العمود الأول: الاسم — العمود الثاني: كلمة المرور</p>
+              <p className="text-xs text-neutral-400 dark:text-slate-500 mt-1">العمود الأول: الاسم — العمود الثاني: كلمة المرور</p>
             </div>
           </>
         )}
@@ -165,7 +165,7 @@ export default function EmployeeImport({ onImported }: { onImported?: () => void
           {result.errors.length > 0 && (
             <div className="max-h-40 overflow-y-auto space-y-1">
               {result.errors.map((err, i) => (
-                <p key={i} className="text-xs text-red-500 bg-red-50 rounded-xl px-3 py-1.5">{err}</p>
+                <p key={i} className="text-xs text-red-500 bg-red-50 dark:bg-red-500/20 rounded-xl px-3 py-1.5">{err}</p>
               ))}
             </div>
           )}

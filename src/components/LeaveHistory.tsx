@@ -19,9 +19,9 @@ interface LeaveHistoryProps {
 }
 
 const statusStyles: Record<string, string> = {
-  'قيد الانتظار': 'bg-amber-100 text-amber-800',
-  'مقبولة': 'bg-emerald-100 text-emerald-800',
-  'مرفوضة': 'bg-red-100 text-red-800',
+  'قيد الانتظار': 'bg-amber-100 dark:bg-amber-500/30 text-amber-800 dark:text-amber-300',
+  'مقبولة': 'bg-emerald-100 dark:bg-emerald-500/30 text-emerald-800 dark:text-emerald-300',
+  'مرفوضة': 'bg-red-100 dark:bg-red-500/30 text-red-800 dark:text-red-300',
 }
 
 function DateCell({ start, end, type }: { start: string; end: string; type: string }) {
@@ -34,7 +34,7 @@ function DateCell({ start, end, type }: { start: string; end: string; type: stri
   return (
     <span className="inline-flex items-center gap-1.5">
       <span className="number" dir="ltr">{start}</span>
-      <span className="text-slate-400 select-none mx-1" dir="ltr">&larr;</span>
+      <span className="text-slate-400 dark:text-slate-500 select-none mx-1" dir="ltr">&larr;</span>
       <span className="number" dir="ltr">{end}</span>
     </span>
   )
@@ -48,9 +48,9 @@ export default function LeaveHistory({ requests, loading }: LeaveHistoryProps) {
       </CardHeader>
       <CardContent>
         {loading ? (
-          <p className="text-center text-slate-500 py-8">جاري التحميل...</p>
+          <p className="text-center text-slate-500 dark:text-slate-400 py-8">جاري التحميل...</p>
         ) : requests.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-10 text-slate-400">
+          <div className="flex flex-col items-center justify-center py-10 text-slate-400 dark:text-slate-500">
             <Inbox className="w-10 h-10 mb-3" />
             <p className="text-sm">لا توجد إجازات مسجلة</p>
           </div>
@@ -74,7 +74,7 @@ export default function LeaveHistory({ requests, loading }: LeaveHistoryProps) {
                   <TableCell>
                     <span
                       className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-                        statusStyles[req.status] ?? 'bg-slate-100 text-slate-700'
+                        statusStyles[req.status] ?? 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
                       }`}
                     >
                       {req.status}

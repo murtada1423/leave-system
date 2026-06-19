@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { X, User, Lock, ShieldCheck, Upload, CheckCircle, AlertCircle, Loader2, Save } from 'lucide-react'
+import { X, User, Lock, ShieldCheck, Upload, CheckCircle, AlertCircle, Loader2, Save, Sun, Clock } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 
 interface EmployeeFormData {
@@ -7,6 +7,8 @@ interface EmployeeFormData {
   full_name: string
   password: string
   role: string
+  days_balance?: number
+  hourly_balance?: number
 }
 
 interface EmployeeModalProps {
@@ -29,7 +31,7 @@ export default function EmployeeModal({ open, editData, onClose, onSaved }: Empl
   useEffect(() => {
     if (open) {
       if (editData) {
-        setForm({ id: editData.id, full_name: editData.full_name, password: '', role: editData.role })
+        setForm({ id: editData.id, full_name: editData.full_name, password: '', role: editData.role, days_balance: editData.days_balance ?? 3, hourly_balance: editData.hourly_balance ?? 2 })
         setTab('manual')
       } else {
         setForm({ full_name: '', password: '', role: 'employee' })
@@ -57,7 +59,7 @@ export default function EmployeeModal({ open, editData, onClose, onSaved }: Empl
       if (editData?.id) {
         const { error: updateErr } = await supabase
           .from('profiles')
-          .update({ full_name: form.full_name.trim(), role: form.role })
+          .update({ full_name: form.full_name.trim(), role: form.role, days_balance: form.days_balance, hourly_balance: form.hourly_balance })
           .eq('id', editData.id)
         if (updateErr) throw updateErr
       } else {
@@ -189,28 +191,28 @@ export default function EmployeeModal({ open, editData, onClose, onSaved }: Empl
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="w-full max-w-xl mx-4 backdrop-blur-2xl bg-white/70 rounded-3xl border border-white/40 shadow-2xl shadow-black/10 p-8 space-y-6 max-h-[90vh] overflow-y-auto"
+        className="w-full max-w-xl mx-4 backdrop-blur-2xl bg-white/70 dark:bg-slate-900/70 rounded-3xl border border-white/40 dark:border-slate-700/40 shadow-2xl shadow-black/10 dark:shadow-black/30 p-8 space-y-6 max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between">
-          <h3 className="text-xl font-bold text-neutral-900">
+          <h3 className="text-xl font-bold text-neutral-900 dark:text-white">
             {isEditing ? 'تعديل بيانات الموظف' : 'إضافة موظف جديد'}
           </h3>
-          <button onClick={onClose} className="p-2 rounded-xl hover:bg-white/60 transition cursor-pointer">
-            <X className="w-5 h-5 text-neutral-500" />
+          <button onClick={onClose} className="p-2 rounded-xl hover:bg-white/60 dark:hover:bg-slate-800/60 transition cursor-pointer">
+            <X className="w-5 h-5 text-neutral-500 dark:text-slate-400" />
           </button>
         </div>
 
         {!isEditing && (
-          <div className="flex gap-2 bg-white/40 rounded-2xl p-1">
+          <div className="flex gap-2 bg-white/40 dark:bg-slate-800/40 rounded-2xl p-1">
             <button
-              className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer ${tab === 'manual' ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-500 hover:text-neutral-700'}`}
+              className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer ${tab === 'manual' ? 'bg-white shadow-sm text-neutral-900 dark:text-white dark:bg-slate-700' : 'text-neutral-500 dark:text-slate-400 hover:text-neutral-700 dark:hover:text-slate-200'}`}
               onClick={() => setTab('manual')}
             >
               إضافة يدوي
             </button>
             <button
-              className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer ${tab === 'excel' ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-500 hover:text-neutral-700'}`}
+              className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer ${tab === 'excel' ? 'bg-white shadow-sm text-neutral-900 dark:text-white dark:bg-slate-700' : 'text-neutral-500 dark:text-slate-400 hover:text-neutral-700 dark:hover:text-slate-200'}`}
               onClick={() => setTab('excel')}
             >
               استيراد من إكسل
@@ -221,42 +223,42 @@ export default function EmployeeModal({ open, editData, onClose, onSaved }: Empl
         {tab === 'manual' && (
           <div className="space-y-4">
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-neutral-700">الاسم الثلاثي للموظف</label>
+              <label className="block text-sm font-medium text-neutral-700 dark:text-slate-200">الاسم الثلاثي للموظف</label>
               <div className="relative">
-                <User className="absolute right-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
+                <User className="absolute right-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400 dark:text-slate-400" />
                 <input
                   type="text"
                   value={form.full_name}
                   onChange={(e) => handleChange('full_name', e.target.value)}
-                  className="w-full h-12 pr-11 pl-4 rounded-2xl bg-white/80 border border-neutral-200 text-neutral-900 placeholder-neutral-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400 transition"
+                  className="w-full h-12 pr-11 pl-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400 transition"
                   placeholder="أدخل اسم الموظف"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-neutral-700">كلمة المرور</label>
+              <label className="block text-sm font-medium text-neutral-700 dark:text-slate-200">كلمة المرور</label>
               <div className="relative">
-                <Lock className="absolute right-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
+                <Lock className="absolute right-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400 dark:text-slate-400" />
                 <input
                   type="password"
                   dir="ltr"
                   value={form.password}
                   onChange={(e) => handleChange('password', e.target.value)}
-                  className="w-full h-12 pr-11 pl-4 rounded-2xl bg-white/80 border border-neutral-200 text-neutral-900 placeholder-neutral-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400 transition"
+                  className="w-full h-12 pr-11 pl-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400 transition"
                   placeholder={isEditing ? 'اتركه فارغاً إذا لم ترد التغيير' : '••••••••'}
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-neutral-700">الدور</label>
+              <label className="block text-sm font-medium text-neutral-700 dark:text-slate-200">الدور</label>
               <div className="relative">
-                <ShieldCheck className="absolute right-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400 pointer-events-none" />
+                <ShieldCheck className="absolute right-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400 dark:text-slate-400 pointer-events-none" />
                 <select
                   value={form.role}
                   onChange={(e) => handleChange('role', e.target.value)}
-                  className="w-full h-12 pr-11 pl-4 rounded-2xl bg-white/80 border border-neutral-200 text-neutral-900 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400 transition appearance-none cursor-pointer"
+                  className="w-full h-12 pr-11 pl-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400 transition appearance-none cursor-pointer"
                 >
                   <option value="employee">موظف</option>
                   <option value="admin">مدير</option>
@@ -264,8 +266,51 @@ export default function EmployeeModal({ open, editData, onClose, onSaved }: Empl
               </div>
             </div>
 
+            {isEditing && (
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-neutral-700 dark:text-slate-200">رصيد الأيام</label>
+                  <div className="relative">
+                    <Sun className="absolute right-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-400" />
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      lang="en"
+                      dir="ltr"
+                      value={form.days_balance}
+                      onChange={(e) => {
+                        const v = e.target.value.replace(/[^0-9]/g, '')
+                        setForm((prev) => ({ ...prev, days_balance: v ? parseInt(v) : 0 }))
+                      }}
+                      className="w-full h-12 pr-11 pl-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400 transition number"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-neutral-700 dark:text-slate-200">رصيد الساعات</label>
+                  <div className="relative">
+                    <Clock className="absolute right-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-sky-400" />
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      lang="en"
+                      dir="ltr"
+                      value={form.hourly_balance}
+                      onChange={(e) => {
+                        const v = e.target.value.replace(/[^0-9]/g, '')
+                        setForm((prev) => ({ ...prev, hourly_balance: v ? parseInt(v) : 0 }))
+                      }}
+                      className="w-full h-12 pr-11 pl-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400 transition number"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
             {error && (
-              <div className="flex items-start gap-3 text-sm rounded-2xl px-4 py-3 bg-red-500/10 border border-red-300/30 text-red-600">
+              <div className="flex items-start gap-3 text-sm rounded-2xl px-4 py-3 bg-red-500/10 dark:bg-red-500/15 border border-red-300/30 dark:border-red-500/30 text-red-600 dark:text-red-400">
                 <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-red-500" />
                 <span>{error}</span>
               </div>
@@ -275,7 +320,7 @@ export default function EmployeeModal({ open, editData, onClose, onSaved }: Empl
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex-1 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-indigo-700 text-white font-semibold text-sm hover:from-indigo-500 hover:to-indigo-600 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2 shadow-lg shadow-indigo-200"
+                className="flex-1 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-indigo-700 text-white font-semibold text-sm hover:from-indigo-500 hover:to-indigo-600 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2 shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30"
               >
                 {saving ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -286,7 +331,7 @@ export default function EmployeeModal({ open, editData, onClose, onSaved }: Empl
               </button>
               <button
                 onClick={onClose}
-                className="px-8 h-12 rounded-2xl bg-white/80 border border-neutral-200 text-neutral-700 font-medium text-sm hover:bg-white transition cursor-pointer"
+                className="px-8 h-12 rounded-2xl bg-white/80 dark:bg-slate-800/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-700 dark:text-slate-300 font-medium text-sm hover:bg-white dark:hover:bg-slate-800 transition cursor-pointer"
               >
                 إلغاء
               </button>
@@ -306,19 +351,19 @@ export default function EmployeeModal({ open, editData, onClose, onSaved }: Empl
             />
             <label
               htmlFor="modal-excel-input"
-              className="block w-full py-6 px-6 rounded-2xl border-2 border-dashed border-neutral-300 hover:border-emerald-400 bg-white/40 hover:bg-emerald-50/40 transition cursor-pointer text-center"
+              className="block w-full py-6 px-6 rounded-2xl border-2 border-dashed border-neutral-300 dark:border-slate-600 hover:border-emerald-400 bg-white/40 dark:bg-slate-800/40 hover:bg-emerald-50/40 dark:hover:bg-emerald-900/20 transition cursor-pointer text-center"
             >
               {importing ? (
                 <div className="flex flex-col items-center gap-3">
                   <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
-                  <span className="text-sm text-neutral-600">{importProgress || 'جاري الاستيراد...'}</span>
+                  <span className="text-sm text-neutral-600 dark:text-slate-400">{importProgress || 'جاري الاستيراد...'}</span>
                 </div>
               ) : (
                 <div className="flex flex-col items-center gap-3">
-                  <Upload className="w-8 h-8 text-neutral-400" />
+                  <Upload className="w-8 h-8 text-neutral-400 dark:text-slate-400" />
                   <div>
-                    <p className="text-sm font-medium text-neutral-700">استيراد الموظفين من ملف إكسل</p>
-                    <p className="text-xs text-neutral-400 mt-1">العمود الأول: الاسم — العمود الثاني: كلمة المرور</p>
+                    <p className="text-sm font-medium text-neutral-700 dark:text-slate-200">استيراد الموظفين من ملف إكسل</p>
+                    <p className="text-xs text-neutral-400 dark:text-slate-400 mt-1">العمود الأول: الاسم — العمود الثاني: كلمة المرور</p>
                   </div>
                 </div>
               )}
@@ -327,12 +372,12 @@ export default function EmployeeModal({ open, editData, onClose, onSaved }: Empl
             {importResult && !importing && (
               <div className="space-y-3">
                 <div className="flex items-center gap-4 text-sm">
-                  <span className="flex items-center gap-1.5 text-emerald-600">
+                  <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
                     <CheckCircle className="w-4 h-4" />
                     تم بنجاح: {importResult.success}
                   </span>
                   {importResult.fail > 0 && (
-                    <span className="flex items-center gap-1.5 text-red-500">
+                    <span className="flex items-center gap-1.5 text-red-500 dark:text-red-400">
                       <AlertCircle className="w-4 h-4" />
                       فشل: {importResult.fail}
                     </span>
@@ -341,7 +386,7 @@ export default function EmployeeModal({ open, editData, onClose, onSaved }: Empl
                 {importResult.errors.length > 0 && (
                   <div className="max-h-32 overflow-y-auto space-y-1">
                     {importResult.errors.map((err, i) => (
-                      <p key={i} className="text-xs text-red-500 bg-red-50 rounded-xl px-3 py-1.5">{err}</p>
+                      <p key={i} className="text-xs text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-500/10 rounded-xl px-3 py-1.5">{err}</p>
                     ))}
                   </div>
                 )}
@@ -351,7 +396,7 @@ export default function EmployeeModal({ open, editData, onClose, onSaved }: Empl
             <div className="flex gap-3 pt-2">
               <button
                 onClick={onClose}
-                className="flex-1 h-12 rounded-2xl bg-white/80 border border-neutral-200 text-neutral-700 font-medium text-sm hover:bg-white transition cursor-pointer"
+                className="flex-1 h-12 rounded-2xl bg-white/80 dark:bg-slate-800/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-700 dark:text-slate-300 font-medium text-sm hover:bg-white dark:hover:bg-slate-800 transition cursor-pointer"
               >
                 إغلاق
               </button>

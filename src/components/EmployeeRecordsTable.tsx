@@ -24,9 +24,9 @@ export default function EmployeeRecordsTable({ employees, loading }: EmployeeRec
       </CardHeader>
       <CardContent>
         {loading ? (
-          <p className="text-center text-slate-500 py-8">جاري التحميل...</p>
+          <p className="text-center text-slate-500 dark:text-slate-400 py-8">جاري التحميل...</p>
         ) : employees.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-10 text-slate-400">
+          <div className="flex flex-col items-center justify-center py-10 text-slate-400 dark:text-slate-500">
             <Users className="w-10 h-10 mb-3" />
             <p className="text-sm">لا يوجد موظفون مسجلون</p>
           </div>
@@ -50,7 +50,7 @@ export default function EmployeeRecordsTable({ employees, loading }: EmployeeRec
                   </TableCell>
                   <TableCell className="number">{emp.days_balance}</TableCell>
                   <TableCell className="number">{emp.hourly_balance}</TableCell>
-                  <TableCell className="number">{new Date(emp.created_at).toLocaleDateString('ar-SA')}</TableCell>
+                  <TableCell className="number">{new Date(emp.created_at).toLocaleDateString('en-GB')}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

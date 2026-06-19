@@ -22,27 +22,27 @@ export default function AttendanceCards({
       label: 'الموظفون المتواجدون',
       count: presentCount,
       icon: UserCheck,
-      bg: 'bg-emerald-50',
+      bg: 'bg-emerald-50 dark:bg-emerald-500/20',
       iconColor: 'text-emerald-500',
-      shadow: 'shadow-emerald-200',
+      shadow: 'shadow-emerald-200 dark:shadow-emerald-900/30',
     },
     {
       key: 'today' as const,
       label: 'مجازون اليوم',
       count: onLeaveTodayCount,
       icon: CalendarCheck,
-      bg: 'bg-amber-50',
+      bg: 'bg-amber-50 dark:bg-amber-500/20',
       iconColor: 'text-amber-500',
-      shadow: 'shadow-amber-200',
+      shadow: 'shadow-amber-200 dark:shadow-amber-900/30',
     },
     {
       key: 'tomorrow' as const,
       label: 'مجازون غداً',
       count: onLeaveTomorrowCount,
       icon: CalendarClock,
-      bg: 'bg-sky-50',
+      bg: 'bg-sky-50 dark:bg-sky-500/20',
       iconColor: 'text-sky-500',
-      shadow: 'shadow-sky-200',
+      shadow: 'shadow-sky-200 dark:shadow-sky-900/30',
     },
   ]
 
@@ -62,8 +62,8 @@ export default function AttendanceCards({
                 <card.icon className={`w-6 h-6 ${card.iconColor}`} />
               </div>
               <div>
-                <p className="text-sm text-slate-500">{card.label}</p>
-                <p className="text-3xl font-bold text-slate-900 number">
+                <p className="text-sm text-slate-500 dark:text-slate-400">{card.label}</p>
+                <p className="text-3xl font-bold text-slate-900 dark:text-white number">
                   {loading ? '...' : card.count}
                 </p>
               </div>

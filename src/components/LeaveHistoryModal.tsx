@@ -25,9 +25,9 @@ interface LeaveHistoryModalProps {
 }
 
 const statusBadge: Record<string, string> = {
-  'قيد الانتظار': 'bg-amber-100 text-amber-700',
-  'مقبولة': 'bg-emerald-100 text-emerald-700',
-  'مرفوضة': 'bg-red-100 text-red-700',
+  'قيد الانتظار': 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400',
+  'مقبولة': 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400',
+  'مرفوضة': 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400',
 }
 
 const statusLabel: Record<string, string> = {
@@ -64,15 +64,15 @@ export default function LeaveHistoryModal({ employeeId, employees, onClose }: Le
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="w-full max-w-2xl mx-4 backdrop-blur-2xl bg-white/70 rounded-3xl border border-white/40 shadow-2xl shadow-black/10 p-8 space-y-6 max-h-[80vh] flex flex-col"
+        className="w-full max-w-2xl mx-4 backdrop-blur-2xl bg-white/70 dark:bg-slate-900/70 rounded-3xl border border-white/40 dark:border-slate-700/40 shadow-2xl shadow-black/10 dark:shadow-black/30 p-8 space-y-6 max-h-[80vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between shrink-0">
-          <h3 className="text-xl font-bold text-neutral-900">
+          <h3 className="text-xl font-bold text-neutral-900 dark:text-white">
             سجل إجازات الموظف: {employee?.full_name || ''}
           </h3>
-          <button onClick={onClose} className="p-2 rounded-xl hover:bg-white/60 transition cursor-pointer">
-            <X className="w-5 h-5 text-neutral-500" />
+          <button onClick={onClose} className="p-2 rounded-xl hover:bg-white/60 dark:hover:bg-slate-800/60 transition cursor-pointer">
+            <X className="w-5 h-5 text-neutral-500 dark:text-slate-400" />
           </button>
         </div>
 
@@ -82,7 +82,7 @@ export default function LeaveHistoryModal({ employeeId, employees, onClose }: Le
               <Loader2 className="w-6 h-6 text-indigo-500 animate-spin" />
             </div>
           ) : leaves.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-neutral-400">
+            <div className="flex flex-col items-center justify-center py-16 text-neutral-400 dark:text-slate-500">
               <Calendar className="w-10 h-10 mb-3" />
               <p className="text-sm">لا يوجد سجل إجازات لهذا الموظف</p>
             </div>
@@ -91,32 +91,32 @@ export default function LeaveHistoryModal({ employeeId, employees, onClose }: Le
               {leaves.map((leave) => (
                 <div
                   key={leave.id}
-                  className="flex items-center gap-4 p-4 rounded-2xl bg-white/60 border border-neutral-100"
+                  className="flex items-center gap-4 p-4 rounded-2xl bg-white/60 dark:bg-slate-800/50 border border-neutral-100 dark:border-slate-700/30"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center shrink-0 shadow-sm shadow-indigo-200">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center shrink-0 shadow-sm shadow-indigo-200 dark:shadow-indigo-900/30">
                     <Clock className="w-5 h-5 text-white" />
                   </div>
                   <div className="flex-1 min-w-0 grid grid-cols-3 gap-4 items-center">
                     <div>
-                      <p className="font-medium text-neutral-900 text-sm">{leave.leave_type}</p>
-                      <p className="text-xs text-neutral-500 mt-0.5">
+                      <p className="font-medium text-neutral-900 dark:text-white text-sm">{leave.leave_type}</p>
+                      <p className="text-xs text-neutral-500 dark:text-slate-400 mt-0.5">
                         {leave.leave_type === 'زمنية' ? 'إجازة زمنية' : 'إجازة يومية'}
                       </p>
                     </div>
                     <div className="number">
-                      <p className="text-sm text-neutral-900 dir-ltr" dir="ltr">
-                        {new Date(leave.start_date).toLocaleDateString('ar-SA')}
+                      <p className="text-sm text-neutral-900 dark:text-white dir-ltr" dir="ltr">
+                        {new Date(leave.start_date).toLocaleDateString('en-GB')}
                         {leave.start_date !== leave.end_date && (
-                          <span className="mx-1 text-neutral-400">←</span>
+                          <span className="mx-1 text-neutral-400 dark:text-slate-500">←</span>
                         )}
-                        {leave.start_date !== leave.end_date && new Date(leave.end_date).toLocaleDateString('ar-SA')}
+                        {leave.start_date !== leave.end_date && new Date(leave.end_date).toLocaleDateString('en-GB')}
                       </p>
                       {leave.duration_hours > 0 && (
-                        <p className="text-xs text-neutral-500 mt-0.5 number">{leave.duration_hours} ساعة</p>
+                        <p className="text-xs text-neutral-500 dark:text-slate-400 mt-0.5 number">{leave.duration_hours} ساعة</p>
                       )}
                     </div>
                     <div className="text-left">
-                      <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${statusBadge[leave.status] || 'bg-slate-100 text-slate-600'}`}>
+                      <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${statusBadge[leave.status] || 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}`}>
                         {statusLabel[leave.status] || leave.status}
                       </span>
                     </div>
@@ -129,7 +129,7 @@ export default function LeaveHistoryModal({ employeeId, employees, onClose }: Le
 
         <button
           onClick={onClose}
-          className="w-full h-11 rounded-2xl bg-white/80 border border-neutral-200 text-neutral-700 font-medium text-sm hover:bg-white transition shrink-0 cursor-pointer"
+          className="w-full h-11 rounded-2xl bg-white/80 dark:bg-slate-800/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-700 dark:text-slate-200 font-medium text-sm hover:bg-white dark:hover:bg-slate-800 transition shrink-0 cursor-pointer"
         >
           إغلاق
         </button>

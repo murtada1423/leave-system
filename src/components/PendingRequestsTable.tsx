@@ -33,7 +33,7 @@ function DateCell({ start, end, type }: { start: string; end: string; type: stri
   return (
     <span className="inline-flex items-center gap-1.5">
       <span className="number" dir="ltr">{start}</span>
-      <span className="text-slate-400 select-none mx-1" dir="ltr">&larr;</span>
+      <span className="text-slate-400 dark:text-slate-500 select-none mx-1" dir="ltr">&larr;</span>
       <span className="number" dir="ltr">{end}</span>
     </span>
   )
@@ -53,9 +53,9 @@ export default function PendingRequestsTable({
       </CardHeader>
       <CardContent>
         {loading ? (
-          <p className="text-center text-slate-500 py-8">جاري التحميل...</p>
+          <p className="text-center text-slate-500 dark:text-slate-400 py-8">جاري التحميل...</p>
         ) : requests.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-10 text-slate-400">
+          <div className="flex flex-col items-center justify-center py-10 text-slate-400 dark:text-slate-500">
             <Inbox className="w-10 h-10 mb-3" />
             <p className="text-sm">لا توجد طلبات معلقة</p>
           </div>
