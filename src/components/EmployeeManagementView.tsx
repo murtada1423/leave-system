@@ -23,7 +23,7 @@ interface EmployeeManagementViewProps {
 export default function EmployeeManagementView({ employees, loading, onRefresh }: EmployeeManagementViewProps) {
   const [search, setSearch] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
-  const [editData, setEditData] = useState<{ id: string; full_name: string; password: string; role: string } | null>(null)
+  const [editData, setEditData] = useState<{ id: string; full_name: string; password: string; role: string; days_balance: number; hourly_balance: number } | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const [deleting, setDeleting] = useState(false)
   const [historyEmployeeId, setHistoryEmployeeId] = useState<string | null>(null)
