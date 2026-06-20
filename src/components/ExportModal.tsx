@@ -11,6 +11,7 @@ interface LeaveRecord {
   duration_hours: number
   reason: string | null
   status: string
+  rejection_reason: string | null
   created_at: string
 }
 
@@ -78,6 +79,7 @@ export default function ExportModal({ open, onClose, allRecords, employees }: Ex
         'المدة',
         'السبب',
         'الحالة',
+        'سبب الرفض',
         'تاريخ الطلب',
       ]
 
@@ -94,6 +96,7 @@ export default function ExportModal({ open, onClose, allRecords, employees }: Ex
           duration,
           r.reason || '—',
           r.status,
+          r.rejection_reason || '—',
           new Date(r.created_at).toLocaleDateString('en-GB'),
         ]
       })
@@ -111,6 +114,7 @@ export default function ExportModal({ open, onClose, allRecords, employees }: Ex
         { wch: 10 },
         { wch: 30 },
         { wch: 14 },
+        { wch: 25 },
         { wch: 18 },
       ]
 
