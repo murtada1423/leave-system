@@ -153,7 +153,7 @@ export default function EmployeeManagementView({ employees, loading, onRefresh }
                       </div>
                     </td>
                     <td className="py-4 px-4 text-neutral-600 dark:text-slate-300">
-                      <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium ${emp.role === 'admin' ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300' : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'}`}>
+                      <span className={`inline-flex items-center justify-center w-[70px] h-7 rounded-xl text-xs font-medium ${emp.role === 'admin' ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-600 dark:text-white' : 'bg-slate-100 text-slate-600 dark:bg-slate-600 dark:text-slate-200'}`}>
                         {emp.role === 'admin' ? 'مدير' : 'موظف'}
                       </span>
                     </td>
@@ -209,12 +209,12 @@ export default function EmployeeManagementView({ employees, loading, onRefresh }
       {deleteConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm" onClick={() => !deleting && setDeleteConfirm(null)}>
           <div
-            className="w-full max-w-sm mx-4 backdrop-blur-2xl bg-white/70 rounded-3xl border border-white/40 shadow-2xl shadow-black/10 p-8 space-y-5"
+            className="w-full max-w-sm mx-4 backdrop-blur-2xl bg-white/70 dark:bg-slate-900/70 rounded-3xl border-2 border-white/40 dark:border-slate-600/60 shadow-2xl shadow-black/10 dark:shadow-black/30 p-8 space-y-5"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-red-50 flex items-center justify-center">
-                <AlertCircle className="w-5 h-5 text-red-500" />
+              <div className="w-10 h-10 rounded-2xl bg-red-50 dark:bg-red-500/20 flex items-center justify-center">
+                <AlertCircle className="w-5 h-5 text-red-500 dark:text-red-400" />
               </div>
               <h3 className="text-lg font-bold text-neutral-900 dark:text-white">تأكيد الحذف</h3>
             </div>
@@ -230,7 +230,7 @@ export default function EmployeeManagementView({ employees, loading, onRefresh }
               <button
                 onClick={() => setDeleteConfirm(null)}
                 disabled={deleting}
-                className="flex-1 h-11 rounded-2xl bg-white/80 border border-neutral-200 text-neutral-700 font-medium text-sm hover:bg-white transition cursor-pointer"
+                className="flex-1 h-11 rounded-2xl bg-white/80 dark:bg-slate-800/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-700 dark:text-slate-300 font-medium text-sm hover:bg-white dark:hover:bg-slate-800 transition cursor-pointer"
               >
                 إلغاء
               </button>

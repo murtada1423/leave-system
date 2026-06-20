@@ -210,7 +210,7 @@ export default function ExportModal({ open, onClose, allRecords, employees }: Ex
             <FileSpreadsheet className="w-6 h-6 text-indigo-500 shrink-0" />
             <div>
               <p className="text-sm font-medium text-neutral-700 dark:text-slate-200">تنسيق Excel</p>
-              <p className="text-xs text-neutral-500 dark:text-slate-400 mt-0.5">سيتم تصدير البيانات بصيغة Excel مع دعم كامل للغة العربية والاتجاه من اليمين لليسار</p>
+              <p className="text-xs text-neutral-500 dark:text-slate-400 mt-0.5">سيتم تصدير البيانات بصيغة Excel</p>
             </div>
           </div>
 

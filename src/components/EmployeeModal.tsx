@@ -57,16 +57,25 @@ export default function EmployeeModal({ open, editData, onClose, onSaved }: Empl
 
     try {
       if (editData?.id) {
+        if (editData.role === 'admin' && form.role !== 'admin') {
+          const { count } = await supabase
+            .from('profiles')
+            .select('id', { count: 'exact', head: true })
+            .eq('role', 'admin')
+          if (count !== null && count <= 1) {
+            throw new Error('لا يمكن تغيير صلاحية المدير الوحيد. يجب وجود مدير واحد على الأقل.')
+          }
+        }
         const { error: updateErr } = await supabase
           .from('profiles')
           .update({ full_name: form.full_name.trim(), role: form.role, days_balance: form.days_balance, hourly_balance: form.hourly_balance })
           .eq('id', editData.id)
         if (updateErr) throw updateErr
       } else {
-        const { getCleanEmail } = await import('../lib/email')
         const { createClient } = await import('@supabase/supabase-js')
         const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
         const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+        const { getCleanEmail } = await import('../lib/email')
 
         const tempClient = createClient(supabaseUrl, supabaseAnonKey, {
           auth: {
@@ -123,18 +132,7 @@ export default function EmployeeModal({ open, editData, onClose, onSaved }: Empl
       const sheet = workbook.Sheets[workbook.SheetNames[0]]
       const rows = XLSX.utils.sheet_to_json<(string | undefined)[]>(sheet, { header: 1 })
 
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
-      const { createClient } = await import('@supabase/supabase-js')
       const { getCleanEmail } = await import('../lib/email')
-
-      const tempClient = createClient(supabaseUrl, supabaseAnonKey, {
-        auth: {
-          persistSession: false,
-          storageKey: 'sb-temp-modal-import',
-          storage: { getItem() { return null }, setItem() {}, removeItem() {} },
-        },
-      })
 
       let successCount = 0
       let failCount = 0
