@@ -65,7 +65,7 @@ export default function EmployeeManagementView({ employees, loading, onRefresh }
 
   return (
     <>
-      <div className="flex flex-col h-[calc(100vh-48px)] overflow-hidden backdrop-blur-2xl bg-white/60 dark:bg-slate-900/60 rounded-3xl border border-white/40 dark:border-slate-700/40 shadow-xl shadow-black/5 dark:shadow-black/20 p-4 md:p-8">
+      <div className="flex flex-col h-[calc(100vh-48px)] overflow-hidden backdrop-blur-2xl bg-white/60 dark:bg-slate-900/60 rounded-3xl border border-white/40 dark:border-slate-600/60 shadow-xl shadow-black/5 dark:shadow-black/20 p-4 md:p-8">
         {/* Fixed header section */}
         <div className="shrink-0 space-y-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -116,7 +116,7 @@ export default function EmployeeManagementView({ employees, loading, onRefresh }
             <thead>
               <tr className="border-b border-neutral-100 dark:border-slate-700/50 sticky top-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm z-10">
                 <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">اسم الموظف</th>
-                <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">الدور</th>
+                <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">الصلاحيات</th>
                 <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">رصيد الأيام</th>
                 <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">رصيد الساعات</th>
                 <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">تاريخ التسجيل</th>

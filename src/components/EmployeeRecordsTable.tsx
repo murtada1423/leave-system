@@ -35,7 +35,7 @@ export default function EmployeeRecordsTable({ employees, loading }: EmployeeRec
             <TableHeader>
               <TableRow>
                 <TableHead>اسم الموظف</TableHead>
-                <TableHead>الدور</TableHead>
+                <TableHead>الصلاحيات</TableHead>
                 <TableHead>رصيد الأيام</TableHead>
                 <TableHead>رصيد الساعات</TableHead>
                 <TableHead>تاريخ التسجيل</TableHead>

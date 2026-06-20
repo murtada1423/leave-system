@@ -104,7 +104,7 @@ export default function EmployeeImport({ onImported }: { onImported?: () => void
   }
 
   return (
-    <div className="backdrop-blur-2xl bg-white/60 rounded-3xl border border-white/40 shadow-xl shadow-black/5 p-8 space-y-6">
+    <div className="backdrop-blur-2xl bg-white/60 dark:bg-slate-900/60 rounded-3xl border border-white/40 dark:border-slate-600/60 shadow-xl shadow-black/5 dark:shadow-black/20 p-8 space-y-6">
       <div className="flex items-center gap-3">
         <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-200 dark:shadow-emerald-900/30">
           <FileSpreadsheet className="w-6 h-6 text-white" />

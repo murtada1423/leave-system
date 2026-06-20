@@ -200,7 +200,7 @@ export default function EmployeeModal({ open, editData, onClose, onSaved }: Empl
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="w-full max-w-xl mx-4 backdrop-blur-2xl bg-white/70 dark:bg-slate-900/70 rounded-3xl border border-white/40 dark:border-slate-700/40 shadow-2xl shadow-black/10 dark:shadow-black/30 p-8 space-y-6 max-h-[90vh] overflow-y-auto"
+        className="w-full max-w-xl mx-4 backdrop-blur-2xl bg-white/70 dark:bg-slate-900/70 rounded-3xl border border-white/40 dark:border-slate-600/60 shadow-2xl shadow-black/10 dark:shadow-black/30 p-8 space-y-6 max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between">
@@ -261,7 +261,7 @@ export default function EmployeeModal({ open, editData, onClose, onSaved }: Empl
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-neutral-700 dark:text-slate-200">الدور</label>
+              <label className="block text-sm font-medium text-neutral-700 dark:text-slate-200">الصلاحيات</label>
               <div className="relative">
                 <ShieldCheck className="absolute right-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400 dark:text-slate-400 pointer-events-none" />
                 <select

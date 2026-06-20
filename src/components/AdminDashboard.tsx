@@ -48,6 +48,8 @@ export default function AdminDashboard({ userId, onLogout }: AdminDashboardProps
   const [loadingRequests, setLoadingRequests] = useState(true)
   const [loadingEmployees, setLoadingEmployees] = useState(true)
   const [processing, setProcessing] = useState<string | null>(null)
+  const [rejectReason, setRejectReason] = useState('')
+  const [rejectModalId, setRejectModalId] = useState<string | null>(null)
   const [activeView, setActiveView] = useState('dashboard')
   const [approvedLeaves, setApprovedLeaves] = useState<PendingRequest[]>([])
   const [loadingApproved, setLoadingApproved] = useState(true)
@@ -383,10 +385,21 @@ export default function AdminDashboard({ userId, onLogout }: AdminDashboardProps
   }
 
   const handleReject = async (id: string) => {
+    setRejectModalId(id)
+    setRejectReason('')
+  }
+
+  const confirmReject = async () => {
+    const id = rejectModalId
+    if (!id) return
     setProcessing(id)
+    setRejectModalId(null)
     try {
       const { error } = await supabase.rpc('reject_leave_request', { request_id: id })
       if (error) throw error
+      if (rejectReason.trim()) {
+        await supabase.from('leave_requests').update({ rejection_reason: rejectReason.trim() }).eq('id', id)
+      }
     } catch (err) {
       console.error('Reject failed:', err)
       alert('فشل رفض الطلب')
@@ -504,6 +517,36 @@ export default function AdminDashboard({ userId, onLogout }: AdminDashboardProps
             <AdminLeaveHistoryView employees={employees} />
           )}
         </div>
+
+        {rejectModalId && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setRejectModalId(null)}>
+            <div className="bg-white dark:bg-slate-900 rounded-xl shadow-lg border border-slate-200 dark:border-slate-600/60 w-full max-w-sm mx-4 p-6" onClick={e => e.stopPropagation()}>
+              <h3 className="text-lg font-semibold text-neutral-800 dark:text-slate-100 mb-4">سبب الرفض</h3>
+              <textarea
+                className="w-full border border-slate-300 dark:border-slate-600 rounded-lg p-3 text-sm resize-none bg-white dark:bg-slate-800 text-neutral-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                rows={3}
+                placeholder="اختياري ..."
+                value={rejectReason}
+                onChange={e => setRejectReason(e.target.value)}
+                autoFocus
+              />
+              <div className="flex justify-end gap-3 mt-4">
+                <button
+                  className="px-4 py-2 text-sm rounded-lg bg-slate-100 dark:bg-slate-700 text-neutral-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600"
+                  onClick={() => setRejectModalId(null)}
+                >
+                  إلغاء
+                </button>
+                <button
+                  className="px-4 py-2 text-sm rounded-lg bg-red-600 hover:bg-red-500 text-white"
+                  onClick={confirmReject}
+                >
+                  تأكيد الرفض
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   )

@@ -9,6 +9,7 @@ interface LeaveRequest {
   end_date: string
   duration_hours: number
   reason: string | null
+  rejection_reason: string | null
   status: string
   created_at: string
 }
@@ -62,6 +63,7 @@ export default function LeaveHistory({ requests, loading }: LeaveHistoryProps) {
                 <TableHead>نوع الإجازة</TableHead>
                 <TableHead>التاريخ</TableHead>
                 <TableHead>الحالة</TableHead>
+                <TableHead>سبب الرفض</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -79,6 +81,13 @@ export default function LeaveHistory({ requests, loading }: LeaveHistoryProps) {
                     >
                       {req.status}
                     </span>
+                  </TableCell>
+                  <TableCell className="max-w-[200px]">
+                    {req.status === 'مرفوضة' && req.rejection_reason ? (
+                      <span className="text-red-600 dark:text-red-400 text-sm">{req.rejection_reason}</span>
+                    ) : (
+                      <span className="text-slate-400 dark:text-slate-600">—</span>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

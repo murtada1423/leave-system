@@ -20,6 +20,7 @@ interface LeaveRequest {
   end_date: string
   duration_hours: number
   reason: string | null
+  rejection_reason: string | null
   status: string
   created_at: string
 }

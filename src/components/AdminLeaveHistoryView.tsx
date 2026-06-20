@@ -14,6 +14,7 @@ interface LeaveRecord {
   reason: string | null
   status: string
   created_at: string
+  rejection_reason: string | null
 }
 
 interface EmployeeRecord {
@@ -68,6 +69,7 @@ export default function AdminLeaveHistoryView({ employees }: AdminLeaveHistoryVi
           duration_hours,
           reason,
           status,
+          rejection_reason,
           created_at,
           profiles!inner ( full_name )
         `)
@@ -87,6 +89,7 @@ export default function AdminLeaveHistoryView({ employees }: AdminLeaveHistoryVi
           reason: r.reason as string | null,
           status: r.status as string,
           created_at: r.created_at as string,
+          rejection_reason: r.rejection_reason as string | null,
         }))
         setAllRecords(mapped)
       }
@@ -138,7 +141,7 @@ export default function AdminLeaveHistoryView({ employees }: AdminLeaveHistoryVi
 
   return (
     <>
-      <div className="flex flex-col h-[calc(100vh-48px)] overflow-hidden backdrop-blur-2xl bg-white/60 dark:bg-slate-900/60 rounded-3xl border border-white/40 dark:border-slate-700/40 shadow-xl shadow-black/5 dark:shadow-black/20 p-4 md:p-8">
+      <div className="flex flex-col h-[calc(100vh-48px)] overflow-hidden backdrop-blur-2xl bg-white/60 dark:bg-slate-900/60 rounded-3xl border border-white/40 dark:border-slate-600/60 shadow-xl shadow-black/5 dark:shadow-black/20 p-4 md:p-8">
         {/* Fixed header */}
         <div className="shrink-0 space-y-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -220,17 +223,18 @@ export default function AdminLeaveHistoryView({ employees }: AdminLeaveHistoryVi
                 <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">تاريخ الانتهاء</th>
                 <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">المدة</th>
                 <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">الحالة</th>
+                <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">سبب الرفض</th>
                 <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">تاريخ الطلب</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="text-center py-12 text-neutral-400 dark:text-slate-500">جاري التحميل...</td>
+                  <td colSpan={9} className="text-center py-12 text-neutral-400 dark:text-slate-500">جاري التحميل...</td>
                 </tr>
               ) : filteredRecords.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="text-center py-12 text-neutral-400 dark:text-slate-500">
+                  <td colSpan={9} className="text-center py-12 text-neutral-400 dark:text-slate-500">
                     <div className="flex flex-col items-center gap-2">
                       <CalendarCheck className="w-8 h-8" />
                       <p className="text-sm">لا توجد إجازات مسجلة</p>
@@ -253,6 +257,13 @@ export default function AdminLeaveHistoryView({ employees }: AdminLeaveHistoryVi
                       <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${statusBadge[rec.status] || 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'}`}>
                         {rec.status}
                       </span>
+                    </td>
+                    <td className="py-4 px-4 max-w-[200px]">
+                      {rec.status === 'مرفوضة' && rec.rejection_reason ? (
+                        <span className="text-red-600 dark:text-red-400 text-sm">{rec.rejection_reason}</span>
+                      ) : (
+                        <span className="text-slate-400 dark:text-slate-600">—</span>
+                      )}
                     </td>
                     <td className="py-4 px-4 number text-neutral-500 dark:text-slate-400 text-xs">
                       {new Date(rec.created_at).toLocaleDateString('en-GB')}
