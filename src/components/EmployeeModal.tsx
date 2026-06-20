@@ -132,7 +132,18 @@ export default function EmployeeModal({ open, editData, onClose, onSaved }: Empl
       const sheet = workbook.Sheets[workbook.SheetNames[0]]
       const rows = XLSX.utils.sheet_to_json<(string | undefined)[]>(sheet, { header: 1 })
 
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+      const { createClient } = await import('@supabase/supabase-js')
       const { getCleanEmail } = await import('../lib/email')
+
+      const tempClient = createClient(supabaseUrl, supabaseAnonKey, {
+        auth: {
+          persistSession: false,
+          storageKey: 'sb-temp-modal-import',
+          storage: { getItem() { return null }, setItem() {}, removeItem() {} },
+        },
+      })
 
       let successCount = 0
       let failCount = 0
