@@ -18,9 +18,10 @@ interface EmployeeManagementViewProps {
   employees: EmployeeRecord[]
   loading: boolean
   onRefresh: () => void
+  adminName?: string
 }
 
-export default function EmployeeManagementView({ employees, loading, onRefresh }: EmployeeManagementViewProps) {
+export default function EmployeeManagementView({ employees, loading, onRefresh, adminName }: EmployeeManagementViewProps) {
   const [search, setSearch] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
   const [editData, setEditData] = useState<{ id: string; full_name: string; password: string; role: string; days_balance: number; hourly_balance: number } | null>(null)
@@ -204,6 +205,7 @@ export default function EmployeeManagementView({ employees, loading, onRefresh }
         employees={employees}
         onClose={() => setLeaveModalOpen(false)}
         onSaved={onRefresh}
+        adminName={adminName}
       />
 
       {deleteConfirm && (

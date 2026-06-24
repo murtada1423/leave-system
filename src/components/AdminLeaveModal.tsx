@@ -16,6 +16,7 @@ interface AdminLeaveModalProps {
   employees: EmployeeRecord[]
   onClose: () => void
   onSaved: () => void
+  adminName?: string
 }
 
 function formatDateDisplay(dateStr: string): string {
@@ -54,7 +55,7 @@ function DatePickerOverlay({ value, onChange, required, min, max }: { value: str
   )
 }
 
-export default function AdminLeaveModal({ open, employees, onClose, onSaved }: AdminLeaveModalProps) {
+export default function AdminLeaveModal({ open, employees, onClose, onSaved, adminName }: AdminLeaveModalProps) {
   const [employeeId, setEmployeeId] = useState('')
   const [leaveType, setLeaveType] = useState('')
   const [startDate, setStartDate] = useState('')
@@ -105,6 +106,7 @@ export default function AdminLeaveModal({ open, employees, onClose, onSaved }: A
           duration_hours: isTimeLeave ? 1 : 0,
           reason: reason || null,
           status: 'مقبولة',
+          processed_by: adminName || null,
         })
 
       if (insertErr) throw insertErr

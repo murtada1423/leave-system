@@ -516,6 +516,7 @@ export default function AdminDashboard({ userId, onLogout }: AdminDashboardProps
               employees={employees}
               loading={loadingEmployees}
               onRefresh={refreshEmployees}
+              adminName={profile?.full_name}
             />
           )}
 
