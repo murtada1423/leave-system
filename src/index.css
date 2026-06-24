@@ -66,6 +66,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   cursor: pointer;
 }
 
+input[type="date"]::-webkit-date-and-time-value {
+  direction: ltr !important;
+  text-align: right !important;
+  unicode-bidi: isolate !important;
+}
+
 .number {
   font-variant-numeric: tabular-nums;
 }

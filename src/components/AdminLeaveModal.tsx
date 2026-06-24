@@ -173,7 +173,9 @@ export default function AdminLeaveModal({ open, employees, onClose, onSaved }: A
               <div dir="ltr">
                 <input
                   type="date"
-                   className="w-full h-12 px-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400 transition dark:[color-scheme:dark]"
+                   className="w-full h-12 px-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400 transition dark:[color-scheme:dark] text-right"
+                  dir="ltr"
+                  style={{ direction: 'ltr', unicodeBidi: 'isolate' }}
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
                   max={endDate || undefined}
@@ -186,7 +188,9 @@ export default function AdminLeaveModal({ open, employees, onClose, onSaved }: A
               <div dir="ltr">
                 <input
                   type="date"
-                   className="w-full h-12 px-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400 transition dark:[color-scheme:dark]"
+                   className="w-full h-12 px-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400 transition dark:[color-scheme:dark] text-right"
+                  dir="ltr"
+                  style={{ direction: 'ltr', unicodeBidi: 'isolate' }}
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
                   min={startDate || todayStr}
