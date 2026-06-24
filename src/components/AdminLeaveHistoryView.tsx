@@ -1,7 +1,8 @@
 import { useEffect, useState, useMemo } from 'react'
 import { supabase } from '../lib/supabase'
-import { Search, CalendarCheck, Download } from 'lucide-react'
+import { Search, CalendarCheck, Download, Trash2 } from 'lucide-react'
 import ExportModal from './ExportModal'
+import DeleteLeaveModal from './DeleteLeaveModal'
 
 interface LeaveRecord {
   id: string
@@ -52,6 +53,8 @@ export default function AdminLeaveHistoryView({ employees }: AdminLeaveHistoryVi
   const [dateFrom, setDateFrom] = useState('')
   const [dateTo, setDateTo] = useState('')
   const [exportOpen, setExportOpen] = useState(false)
+  const [deleteTarget, setDeleteTarget] = useState<LeaveRecord | null>(null)
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     let ignore = false
@@ -135,6 +138,38 @@ export default function AdminLeaveHistoryView({ employees }: AdminLeaveHistoryVi
     setSearch('')
     setDateFrom('')
     setDateTo('')
+  }
+
+  const handleDeleteLeave = async () => {
+    const target = deleteTarget
+    if (!target) return
+    setDeleting(true)
+    try {
+      if (target.status === 'مقبولة') {
+        if (target.leave_type === 'زمنية') {
+          const { data: p } = await supabase.from('profiles').select('hourly_balance').eq('id', target.employee_id).single()
+          if (p) {
+            await supabase.from('profiles').update({ hourly_balance: p.hourly_balance + target.duration_hours }).eq('id', target.employee_id)
+          }
+        } else {
+          const s = new Date(target.start_date), e = new Date(target.end_date)
+          const days = Math.floor((e.getTime() - s.getTime()) / 86400000) + 1
+          const { data: p } = await supabase.from('profiles').select('days_balance').eq('id', target.employee_id).single()
+          if (p) {
+            await supabase.from('profiles').update({ days_balance: p.days_balance + days }).eq('id', target.employee_id)
+          }
+        }
+      }
+      const { error } = await supabase.from('leave_requests').delete().eq('id', target.id)
+      if (error) throw error
+      setAllRecords((prev) => prev.filter((r) => r.id !== target.id))
+      setDeleteTarget(null)
+    } catch (err) {
+      console.error('Delete failed:', err)
+      alert('فشل حذف الإجازة')
+    } finally {
+      setDeleting(false)
+    }
   }
 
   const hasActiveFilters = search.trim() || dateFrom || dateTo
@@ -225,16 +260,17 @@ export default function AdminLeaveHistoryView({ employees }: AdminLeaveHistoryVi
                 <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">الحالة</th>
                 <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">سبب الرفض</th>
                 <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">تاريخ الطلب</th>
+                <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400 w-16"></th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={9} className="text-center py-12 text-neutral-400 dark:text-slate-500">جاري التحميل...</td>
+                  <td colSpan={10} className="text-center py-12 text-neutral-400 dark:text-slate-500">جاري التحميل...</td>
                 </tr>
               ) : filteredRecords.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="text-center py-12 text-neutral-400 dark:text-slate-500">
+                  <td colSpan={10} className="text-center py-12 text-neutral-400 dark:text-slate-500">
                     <div className="flex flex-col items-center gap-2">
                       <CalendarCheck className="w-8 h-8" />
                       <p className="text-sm">لا توجد إجازات مسجلة</p>
@@ -268,6 +304,16 @@ export default function AdminLeaveHistoryView({ employees }: AdminLeaveHistoryVi
                     <td className="py-4 px-4 number text-neutral-500 dark:text-slate-400 text-xs">
                       {new Date(rec.created_at).toLocaleDateString('en-GB')}
                     </td>
+                    <td className="py-4 px-4">
+                      {(rec.status === 'مقبولة' || rec.status === 'مرفوضة') && (
+                      <button
+                        onClick={() => setDeleteTarget(rec)}
+                        className="p-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-500/10 text-neutral-400 dark:text-slate-500 hover:text-red-600 dark:hover:text-red-400 transition cursor-pointer"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                      )}
+                    </td>
                   </tr>
                 ))
               )}
@@ -281,6 +327,14 @@ export default function AdminLeaveHistoryView({ employees }: AdminLeaveHistoryVi
         onClose={() => setExportOpen(false)}
         allRecords={allRecords}
         employees={employees}
+      />
+
+      <DeleteLeaveModal
+        open={!!deleteTarget}
+        onClose={() => { if (!deleting) setDeleteTarget(null) }}
+        onConfirm={handleDeleteLeave}
+        loading={deleting}
+        leaveStatus={deleteTarget?.status}
       />
     </>
   )

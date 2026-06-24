@@ -171,7 +171,7 @@ export default function EmployeeDashboard({ userId, onLogout }: EmployeeDashboar
 
           <LeaveRequestForm onSubmit={handleSubmitRequest} daysBalance={profile.days_balance} hourlyBalance={profile.hourly_balance} />
 
-          <LeaveHistory requests={requests} loading={loadingRequests} />
+          <LeaveHistory requests={requests} loading={loadingRequests} isAdmin={profile.role === 'مدير'} employeeId={userId} onRequestsChange={setRequests} />
         </div>
       </main>
     </div>

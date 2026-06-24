@@ -141,7 +141,8 @@ export default function LeaveRequestForm({ onSubmit, daysBalance, hourlyBalance 
                   <Input
                     id="start-date"
                     type="date"
-                    className="w-full dark:[color-scheme:dark]"
+                    className="w-full dark:[color-scheme:dark] text-right"
+                    dir="ltr"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
                     required
@@ -154,7 +155,8 @@ export default function LeaveRequestForm({ onSubmit, daysBalance, hourlyBalance 
                   <Input
                     id="end-date"
                     type="date"
-                    className="w-full dark:[color-scheme:dark]"
+                    className="w-full dark:[color-scheme:dark] text-right"
+                    dir="ltr"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
                   required
@@ -171,7 +173,8 @@ export default function LeaveRequestForm({ onSubmit, daysBalance, hourlyBalance 
                 <Input
                   id="single-date"
                   type="date"
-                  className="w-full dark:[color-scheme:dark]"
+                  className="w-full dark:[color-scheme:dark] text-right"
+                  dir="ltr"
                   value={singleDate}
                   onChange={(e) => setSingleDate(e.target.value)}
                   required

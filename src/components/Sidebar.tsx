@@ -36,6 +36,14 @@ export default function Sidebar({ fullName, role, onLogout, activeView, onNaviga
         <Menu className="w-5 h-5 text-slate-700" />
       </button>
 
+      {/* Mobile logout */}
+      <button
+        onClick={onLogout}
+        className="fixed top-4 left-16 z-40 md:hidden w-10 h-10 rounded-2xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 shadow-sm flex items-center justify-center cursor-pointer text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 transition"
+      >
+        <LogOut className="w-5 h-5" />
+      </button>
+
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
