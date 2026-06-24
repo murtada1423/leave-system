@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react'
 import { supabase } from '../lib/supabase'
-import { Search, CalendarCheck, Download, Trash2 } from 'lucide-react'
+import { Search, CalendarCheck, Download, Trash2, UserCheck } from 'lucide-react'
 import ExportModal from './ExportModal'
 import DeleteLeaveModal from './DeleteLeaveModal'
 
@@ -16,6 +16,7 @@ interface LeaveRecord {
   status: string
   created_at: string
   rejection_reason: string | null
+  processed_by: string | null
 }
 
 interface EmployeeRecord {
@@ -73,6 +74,7 @@ export default function AdminLeaveHistoryView({ employees }: AdminLeaveHistoryVi
           reason,
           status,
           rejection_reason,
+          processed_by,
           created_at,
           profiles!inner ( full_name )
         `)
@@ -93,6 +95,7 @@ export default function AdminLeaveHistoryView({ employees }: AdminLeaveHistoryVi
           status: r.status as string,
           created_at: r.created_at as string,
           rejection_reason: r.rejection_reason as string | null,
+          processed_by: r.processed_by as string | null,
         }))
         setAllRecords(mapped)
       }
@@ -262,6 +265,7 @@ export default function AdminLeaveHistoryView({ employees }: AdminLeaveHistoryVi
                 <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">تاريخ الانتهاء</th>
                 <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">المدة</th>
                 <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">الحالة</th>
+                <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">بواسطة</th>
                 <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">سبب الرفض</th>
                 <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">تاريخ الطلب</th>
                 <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400 w-16"></th>
@@ -270,11 +274,11 @@ export default function AdminLeaveHistoryView({ employees }: AdminLeaveHistoryVi
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={10} className="text-center py-12 text-neutral-400 dark:text-slate-500">جاري التحميل...</td>
+                  <td colSpan={11} className="text-center py-12 text-neutral-400 dark:text-slate-500">جاري التحميل...</td>
                 </tr>
               ) : filteredRecords.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className="text-center py-12 text-neutral-400 dark:text-slate-500">
+                  <td colSpan={11} className="text-center py-12 text-neutral-400 dark:text-slate-500">
                     <div className="flex flex-col items-center gap-2">
                       <CalendarCheck className="w-8 h-8" />
                       <p className="text-sm">لا توجد إجازات مسجلة</p>
@@ -297,6 +301,16 @@ export default function AdminLeaveHistoryView({ employees }: AdminLeaveHistoryVi
                       <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${statusBadge[rec.status] || 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'}`}>
                         {rec.status}
                       </span>
+                    </td>
+                    <td className="py-4 px-4">
+                      {rec.processed_by ? (
+                        <span className="inline-flex items-center gap-1.5 text-xs text-neutral-600 dark:text-slate-300">
+                          <UserCheck className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400 shrink-0" />
+                          {rec.processed_by}
+                        </span>
+                      ) : (
+                        <span className="text-slate-400 dark:text-slate-600">—</span>
+                      )}
                     </td>
                     <td className="py-4 px-4 max-w-[200px]">
                       {rec.status === 'مرفوضة' && rec.rejection_reason ? (

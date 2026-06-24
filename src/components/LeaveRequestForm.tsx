@@ -62,7 +62,6 @@ export default function LeaveRequestForm({ onSubmit, daysBalance, hourlyBalance 
   const [singleDate, setSingleDate] = useState('')
   const [reason, setReason] = useState('')
   const [submitting, setSubmitting] = useState(false)
-  const [confirmBorrow, setConfirmBorrow] = useState(false)
   const [error, setError] = useState('')
 
   const todayStr = new Date().toISOString().split('T')[0]
@@ -78,8 +77,8 @@ export default function LeaveRequestForm({ onSubmit, daysBalance, hourlyBalance 
     return Math.floor((e.getTime() - s.getTime()) / 86400000) + 1
   }
 
-  const setTodayLeave = () => { setStartDate(todayStr); setEndDate(todayStr); setError(''); setConfirmBorrow(false) }
-  const setTomorrowLeave = () => { setStartDate(tomorrowStr); setEndDate(tomorrowStr); setError(''); setConfirmBorrow(false) }
+  const setTodayLeave = () => { setStartDate(todayStr); setEndDate(todayStr); setError('') }
+  const setTomorrowLeave = () => { setStartDate(tomorrowStr); setEndDate(tomorrowStr); setError('') }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -90,17 +89,12 @@ export default function LeaveRequestForm({ onSubmit, daysBalance, hourlyBalance 
     const days = isDayLeave ? calcDays() : 0
     const balance = isTimeLeave ? hourlyBalance : daysBalance
 
-    if (isDayLeave && days > balance + 1) {
-      setError(`رصيدك غير كافٍ. الرصيد المتاح: ${balance} يوم${balance !== 1 ? 'اً' : ''}. لا يمكن استلاف أكثر من يوم واحد.`)
+    if (isDayLeave && days > balance) {
+      setError(`رصيدك غير كافٍ. الرصيد المتاح: ${balance} يوم${balance !== 1 ? 'اً' : ''}.`)
       return
     }
 
-    if (isDayLeave && days === balance + 1 && !confirmBorrow) {
-      setConfirmBorrow(true)
-      return
-    }
-
-    if (isTimeLeave && 1 > balance + 1) {
+    if (isTimeLeave && 1 > balance) {
       setError('رصيد الساعات غير كافٍ')
       return
     }
@@ -120,7 +114,7 @@ export default function LeaveRequestForm({ onSubmit, daysBalance, hourlyBalance 
       setEndDate('')
       setSingleDate('')
       setReason('')
-      setConfirmBorrow(false)
+      setReason('')
       setError('')
     } finally {
       setSubmitting(false)
@@ -198,55 +192,6 @@ export default function LeaveRequestForm({ onSubmit, daysBalance, hourlyBalance 
             />
           </div>
 
-          {confirmBorrow && (
-            <div className="flex items-start gap-3 text-sm rounded-2xl px-4 py-3 bg-amber-500/10 border border-amber-300/30 text-amber-700">
-              <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-amber-500" />
-              <div className="space-y-2">
-                <p>رصيدك غير كافٍ ({daysBalance} يوم). هل تريد استلاف <strong>يوم واحد</strong> من الشهر القادم؟</p>
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      setConfirmBorrow(false)
-                      const days = calcDays()
-                      if (days > daysBalance + 1) return
-                      setSubmitting(true)
-                      try {
-                        await onSubmit({
-                          leave_type: leaveType,
-                          start_date: startDate,
-                          end_date: endDate,
-                          duration_hours: 0,
-                          reason,
-                        })
-                        setLeaveType('')
-                        setStartDate('')
-                        setEndDate('')
-                        setSingleDate('')
-                        setReason('')
-                        setError('')
-                      } finally {
-                        setSubmitting(false)
-                      }
-                    }}
-                    className="h-9 px-4 rounded-xl bg-amber-600 text-white text-xs font-medium hover:bg-amber-700 transition cursor-pointer disabled:opacity-50"
-                    disabled={submitting}
-                  >
-                    {submitting ? 'جاري...' : 'نعم، استلاف يوم'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setConfirmBorrow(false)}
-                    disabled={submitting}
-                    className="h-9 px-4 rounded-xl bg-white/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-700 dark:text-slate-200 text-xs font-medium hover:bg-white transition cursor-pointer disabled:opacity-50"
-                  >
-                    إلغاء
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
           {error && (
             <div className="flex items-start gap-3 text-sm rounded-2xl px-4 py-3 bg-red-500/10 border border-red-300/30 text-red-600">
               <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-red-500" />
@@ -254,7 +199,7 @@ export default function LeaveRequestForm({ onSubmit, daysBalance, hourlyBalance 
             </div>
           )}
 
-          <Button type="submit" className="w-full" disabled={submitting || !showForm || confirmBorrow}>
+          <Button type="submit" className="w-full" disabled={submitting || !showForm}>
             <Send className="w-4 h-4 ml-2" />
             {submitting ? 'جاري الإرسال...' : 'إرسال الطلب'}
           </Button>

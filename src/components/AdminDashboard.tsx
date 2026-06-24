@@ -376,6 +376,9 @@ export default function AdminDashboard({ userId, onLogout }: AdminDashboardProps
     try {
       const { error } = await supabase.rpc('approve_leave_request', { request_id: id })
       if (error) throw error
+      if (profile) {
+        await supabase.from('leave_requests').update({ processed_by: profile.full_name }).eq('id', id)
+      }
     } catch (err) {
       console.error('Approve failed:', err)
       alert('فشل قبول الطلب')
@@ -397,8 +400,11 @@ export default function AdminDashboard({ userId, onLogout }: AdminDashboardProps
     try {
       const { error } = await supabase.rpc('reject_leave_request', { request_id: id })
       if (error) throw error
-      if (rejectReason.trim()) {
-        await supabase.from('leave_requests').update({ rejection_reason: rejectReason.trim() }).eq('id', id)
+      const updates: Record<string, string> = {}
+      if (rejectReason.trim()) updates.rejection_reason = rejectReason.trim()
+      if (profile) updates.processed_by = profile.full_name
+      if (Object.keys(updates).length) {
+        await supabase.from('leave_requests').update(updates).eq('id', id)
       }
     } catch (err) {
       console.error('Reject failed:', err)
