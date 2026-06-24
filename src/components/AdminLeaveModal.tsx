@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { X, User, Calendar, AlertCircle, Loader2 } from 'lucide-react'
+import { useState, useRef } from 'react'
+import { X, User, Calendar, AlertCircle, Loader2, ChevronDown } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 
 const LEAVE_TYPES = ['اعتيادية', 'مرضية', 'زمنية'] as const
@@ -16,6 +16,42 @@ interface AdminLeaveModalProps {
   employees: EmployeeRecord[]
   onClose: () => void
   onSaved: () => void
+}
+
+function formatDateDisplay(dateStr: string): string {
+  if (!dateStr) return ''
+  const [y, m, d] = dateStr.split('-')
+  return `${d} - ${m} - ${y}`
+}
+
+function DatePickerOverlay({ value, onChange, required, min, max }: { value: string; onChange: (v: string) => void; required?: boolean; min?: string; max?: string }) {
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  return (
+    <div className="relative w-full" dir="ltr">
+      <input
+        ref={inputRef}
+        type="date"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        required={required}
+        min={min}
+        max={max}
+        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+        style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}
+      />
+      <div
+        className="flex items-center h-12 px-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-900 dark:text-white text-sm focus-within:ring-2 focus-within:ring-indigo-400/50 focus-within:border-indigo-400 transition select-none cursor-pointer"
+        onClick={() => inputRef.current?.showPicker?.() ?? inputRef.current?.click()}
+        style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}
+      >
+        <span className={`flex-1 text-right ${value ? '' : 'text-neutral-400 dark:text-slate-400'}`}>
+          {value ? <bdi dir="ltr">{formatDateDisplay(value)}</bdi> : 'اختر التاريخ'}
+        </span>
+        <ChevronDown className="w-4 h-4 text-neutral-400 dark:text-slate-400 mr-2 shrink-0 pointer-events-none" />
+      </div>
+    </div>
+  )
 }
 
 export default function AdminLeaveModal({ open, employees, onClose, onSaved }: AdminLeaveModalProps) {
@@ -170,33 +206,11 @@ export default function AdminLeaveModal({ open, employees, onClose, onSaved }: A
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <label className="block text-sm font-medium text-neutral-700 dark:text-slate-200">تاريخ البداية</label>
-              <div dir="ltr">
-                <input
-                  type="date"
-                   className="w-full h-12 px-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400 transition dark:[color-scheme:dark] text-right"
-                  dir="ltr"
-                  style={{ direction: 'ltr', unicodeBidi: 'isolate' }}
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  max={endDate || undefined}
-                  required
-                />
-              </div>
+              <DatePickerOverlay value={startDate} onChange={setStartDate} required max={endDate || undefined} />
             </div>
             <div className="space-y-2">
               <label className="block text-sm font-medium text-neutral-700 dark:text-slate-200">تاريخ النهاية</label>
-              <div dir="ltr">
-                <input
-                  type="date"
-                   className="w-full h-12 px-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400 transition dark:[color-scheme:dark] text-right"
-                  dir="ltr"
-                  style={{ direction: 'ltr', unicodeBidi: 'isolate' }}
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  min={startDate || todayStr}
-                  required
-                />
-              </div>
+              <DatePickerOverlay value={endDate} onChange={setEndDate} required min={startDate || todayStr} />
             </div>
           </div>
 
