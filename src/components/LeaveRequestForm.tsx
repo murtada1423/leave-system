@@ -183,16 +183,6 @@ export default function LeaveRequestForm({ onSubmit, daysBalance, hourlyBalance 
           {isTimeLeave && (
             <div className="space-y-2">
               <Label htmlFor="single-date">تاريخ الإجازة</Label>
-                  id="single-date"
-                  type="date"
-                  className="w-full dark:[color-scheme:dark] text-right"
-                  dir="ltr"
-                  style={{ direction: 'ltr', unicodeBidi: 'isolate' }}
-                  value={singleDate}
-                  onChange={(e) => setSingleDate(e.target.value)}
-                  required
-                />
-              </div>
               <DatePickerOverlay value={singleDate} onChange={setSingleDate} required />
             </div>
           )}
