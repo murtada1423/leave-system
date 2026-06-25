@@ -85,7 +85,7 @@ serve(async (req) => {
         await webpush.sendNotification({
           endpoint: sub.endpoint,
           keys: { p256dh: sub.p256dh, auth: sub.auth },
-        }, payload, { TTL: 0 })
+        }, payload, { TTL: 86400 })
 
         sent++
       } catch (err) {
