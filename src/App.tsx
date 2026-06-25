@@ -18,6 +18,14 @@ export default function App() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission().then((permission) => {
+        console.log('Notification permission status:', permission)
+      })
+    }
+  }, [])
+
+  useEffect(() => {
     supabase.auth.getSession().then(({ data: { session: s } }) => {
       if (s?.user) {
         setSession(s)

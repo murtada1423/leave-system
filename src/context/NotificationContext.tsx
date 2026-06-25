@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, useCallback, useRef, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from 'react'
 import { supabase } from '../lib/supabase'
 import { toast } from 'sonner'
 
@@ -13,46 +13,29 @@ export interface Notification {
 }
 
 interface NotificationContextValue {
-  unreadCount: number
   notifications: Notification[]
-  markAsRead: (id: string) => Promise<void>
-  markAllAsRead: () => Promise<void>
-  refresh: () => Promise<void>
 }
 
 const NotificationContext = createContext<NotificationContextValue>({
-  unreadCount: 0,
   notifications: [],
-  markAsRead: async () => {},
-  markAllAsRead: async () => {},
-  refresh: async () => {},
 })
 
 export function useNotifications() {
   return useContext(NotificationContext)
 }
 
-function playChime() {
-  try {
-    const ctx = new AudioContext()
-    const osc = ctx.createOscillator()
-    const gain = ctx.createGain()
-    osc.connect(gain)
-    gain.connect(ctx.destination)
-    osc.frequency.setValueAtTime(880, ctx.currentTime)
-    osc.frequency.exponentialRampToValueAtTime(1320, ctx.currentTime + 0.08)
-    gain.gain.setValueAtTime(0.15, ctx.currentTime)
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3)
-    osc.start(ctx.currentTime)
-    osc.stop(ctx.currentTime + 0.3)
-  } catch {
-    /* audio not supported */
+function showNativeNotification(title: string, body: string) {
+  if ('Notification' in window && Notification.permission === 'granted') {
+    try {
+      new Notification(title, { body, icon: '/icon-192.svg' })
+    } catch {
+      // native notification not supported
+    }
   }
 }
 
 export function NotificationProvider({ userId, children }: { userId: string; children: ReactNode }) {
   const [notifications, setNotifications] = useState<Notification[]>([])
-  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null)
 
   const fetchNotifications = useCallback(async () => {
     const { data } = await supabase
@@ -75,7 +58,7 @@ export function NotificationProvider({ userId, children }: { userId: string; chi
         (payload) => {
           const n = payload.new as Notification
           setNotifications((prev) => [n, ...prev])
-          playChime()
+          showNativeNotification(n.title, n.message)
 
           toast(n.title, {
             description: n.message,
@@ -85,27 +68,13 @@ export function NotificationProvider({ userId, children }: { userId: string; chi
       )
       .subscribe()
 
-    channelRef.current = channel
-
     return () => {
       supabase.removeChannel(channel)
     }
   }, [userId, fetchNotifications])
 
-  const unreadCount = notifications.filter((n) => !n.is_read).length
-
-  const markAsRead = useCallback(async (id: string) => {
-    await supabase.from('notifications').update({ is_read: true }).eq('id', id)
-    setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, is_read: true } : n)))
-  }, [])
-
-  const markAllAsRead = useCallback(async () => {
-    await supabase.from('notifications').update({ is_read: true }).eq('user_id', userId).eq('is_read', false)
-    setNotifications((prev) => prev.map((n) => (n.is_read ? n : { ...n, is_read: true })))
-  }, [userId])
-
   return (
-    <NotificationContext.Provider value={{ unreadCount, notifications, markAsRead, markAllAsRead, refresh: fetchNotifications }}>
+    <NotificationContext.Provider value={{ notifications }}>
       {children}
     </NotificationContext.Provider>
   )
