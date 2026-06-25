@@ -369,6 +369,15 @@ INSERT INTO app_config (key, value) VALUES
   ('vapid_email', 'admin@example.com')
 ON CONFLICT (key) DO NOTHING;
 
+-- Protect app_config: only service_role can access (Edge Function + trigger)
+ALTER TABLE app_config ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Only service_role can read app_config" ON app_config;
+
+CREATE POLICY "Only service_role can read app_config"
+  ON app_config FOR SELECT
+  USING (auth.role() = 'service_role');
+
 -- ==================== TRIGGER: New notification → Call Edge Function for push ====================
 
 -- IMPORTANT: Enable pg_net extension first:
