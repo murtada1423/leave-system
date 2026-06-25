@@ -77,7 +77,7 @@ export default function NotificationBell() {
       {open && (
         <div
           ref={panelRef}
-          className="hidden md:flex absolute top-full left-0 mt-2 w-80 flex-col rounded-3xl backdrop-blur-2xl bg-white/70 dark:bg-slate-900/70 border border-white/40 dark:border-slate-600/60 shadow-2xl shadow-black/10 dark:shadow-black/30 z-50 origin-top-right animate-fade-in max-h-[70vh]"
+          className="hidden md:flex absolute top-full right-0 left-auto mt-2 w-80 flex-col rounded-3xl backdrop-blur-2xl bg-white/70 dark:bg-slate-900/70 border border-white/40 dark:border-slate-600/60 shadow-2xl shadow-black/10 dark:shadow-black/30 z-50 origin-top-left animate-fade-in max-h-[70vh]"
         >
           <NotificationPanelHeader unreadCount={unreadCount} markAllAsRead={markAllAsRead} />
           <NotificationList notifications={notifications} markAsRead={markAsRead} />
