@@ -1,4 +1,4 @@
-import { Bell, BellRing, Check, CheckCheck, Clock } from 'lucide-react'
+import { Bell, BellRing, Check, CheckCheck, Clock, X } from 'lucide-react'
 import { useNotifications, type Notification } from '../context/NotificationContext'
 import { useState, useRef, useEffect } from 'react'
 
@@ -54,7 +54,7 @@ export default function NotificationBell() {
   }, [open])
 
   return (
-    <>
+    <div className="relative">
       <button
         ref={btnRef}
         onClick={() => setOpen((prev) => !prev)}
@@ -73,52 +73,78 @@ export default function NotificationBell() {
         )}
       </button>
 
+      {/* Desktop dropdown */}
       {open && (
         <div
           ref={panelRef}
-          className="absolute top-full left-0 mt-2 w-[360px] max-w-[90vw] max-h-[70vh] flex flex-col rounded-3xl backdrop-blur-2xl bg-white/70 dark:bg-slate-900/70 border border-white/40 dark:border-slate-600/60 shadow-2xl shadow-black/10 dark:shadow-black/30 z-50 origin-top-left animate-fade-in"
+          className="hidden md:flex absolute top-full left-0 mt-2 w-80 flex-col rounded-3xl backdrop-blur-2xl bg-white/70 dark:bg-slate-900/70 border border-white/40 dark:border-slate-600/60 shadow-2xl shadow-black/10 dark:shadow-black/30 z-50 origin-top-right animate-fade-in max-h-[70vh]"
         >
-          <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-slate-100 dark:border-slate-700/30">
-            <h3 className="text-base font-bold text-slate-900 dark:text-white">الإشعارات</h3>
-            {unreadCount > 0 && (
-              <button
-                onClick={markAllAsRead}
-                className="flex items-center gap-1.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition cursor-pointer"
-              >
-                <CheckCheck className="w-3.5 h-3.5" />
-                تحديد الكل كمقروء
-              </button>
-            )}
-          </div>
+          <NotificationPanelHeader unreadCount={unreadCount} markAllAsRead={markAllAsRead} />
+          <NotificationList notifications={notifications} markAsRead={markAsRead} />
+        </div>
+      )}
 
-          <div className="flex-1 overflow-y-auto p-2 space-y-1">
-            {notifications.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-10 text-slate-400 dark:text-slate-500">
-                <Bell className="w-10 h-10 mb-3 opacity-40" />
-                <p className="text-sm">لا توجد إشعارات</p>
-              </div>
-            ) : (
-              notifications.map((n) => (
-                <NotificationItem
-                  key={n.id}
-                  notification={n}
-                  onMarkRead={() => markAsRead(n.id)}
-                />
-              ))
-            )}
+      {/* Mobile full-screen modal */}
+      {open && (
+        <div className="md:hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/30 backdrop-blur-sm" onClick={() => setOpen(false)}>
+          <div
+            className="w-full max-w-lg mx-4 mb-0 sm:mb-0 max-h-[80vh] flex flex-col rounded-t-3xl sm:rounded-3xl backdrop-blur-2xl bg-white/70 dark:bg-slate-900/70 border border-white/40 dark:border-slate-600/60 shadow-2xl shadow-black/10 dark:shadow-black/30 animate-slide-up"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-slate-100 dark:border-slate-700/30">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">الإشعارات</h3>
+              <button onClick={() => setOpen(false)} className="p-2 rounded-xl hover:bg-white/60 dark:hover:bg-slate-800/60 transition cursor-pointer">
+                <X className="w-5 h-5 text-slate-500 dark:text-slate-400" />
+              </button>
+            </div>
+            <NotificationList notifications={notifications} markAsRead={markAsRead} />
           </div>
         </div>
       )}
-    </>
+    </div>
+  )
+}
+
+function NotificationPanelHeader({ unreadCount, markAllAsRead }: { unreadCount: number; markAllAsRead: () => void }) {
+  return (
+    <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-slate-100 dark:border-slate-700/30">
+      <h3 className="text-base font-bold text-slate-900 dark:text-white">الإشعارات</h3>
+      {unreadCount > 0 && (
+        <button
+          onClick={markAllAsRead}
+          className="flex items-center gap-1.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition cursor-pointer"
+        >
+          <CheckCheck className="w-3.5 h-3.5" />
+          تحديد الكل كمقروء
+        </button>
+      )}
+    </div>
+  )
+}
+
+function NotificationList({ notifications: items, markAsRead }: { notifications: Notification[]; markAsRead: (id: string) => void }) {
+  if (items.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-10 text-slate-400 dark:text-slate-500">
+        <Bell className="w-10 h-10 mb-3 opacity-40" />
+        <p className="text-sm">لا توجد إشعارات</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex-1 overflow-y-auto p-2 space-y-1">
+      {items.map((n) => (
+        <NotificationItem key={n.id} notification={n} onMarkRead={() => markAsRead(n.id)} />
+      ))}
+    </div>
   )
 }
 
 function NotificationItem({ notification: n, onMarkRead }: { notification: Notification; onMarkRead: () => void }) {
   return (
     <div
-      onClick={() => {
-        if (!n.is_read) onMarkRead()
-      }}
+      onClick={() => { if (!n.is_read) onMarkRead() }}
       className={`flex items-start gap-3 p-3 rounded-2xl transition cursor-pointer ${
         n.is_read
           ? 'hover:bg-slate-50 dark:hover:bg-slate-800/40'
