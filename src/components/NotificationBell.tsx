@@ -84,22 +84,49 @@ export default function NotificationBell() {
         </div>
       )}
 
-      {/* Mobile full-screen modal */}
+      {/* Mobile bottom sheet */}
       {open && (
-        <div className="md:hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/30 backdrop-blur-sm" onClick={() => setOpen(false)}>
+        <>
+          <div className="md:hidden fixed inset-0 z-40 bg-black/30 backdrop-blur-sm" onClick={() => setOpen(false)} />
           <div
-            className="w-full max-w-lg mx-4 mb-0 sm:mb-0 max-h-[80vh] flex flex-col rounded-t-3xl sm:rounded-3xl backdrop-blur-2xl bg-white/70 dark:bg-slate-900/70 border border-white/40 dark:border-slate-600/60 shadow-2xl shadow-black/10 dark:shadow-black/30 animate-slide-up"
+            className="md:hidden fixed bottom-0 left-0 right-0 z-50 max-h-[75vh] flex flex-col rounded-t-[28px] backdrop-blur-2xl bg-white/70 dark:bg-slate-900/70 border border-white/40 dark:border-slate-600/60 shadow-[0_-8px_30px_rgb(0,0,0,0.12)] animate-slide-up"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-slate-100 dark:border-slate-700/30">
+            <div className="p-5 border-b border-slate-100 dark:border-slate-700/30 flex items-center justify-between shrink-0">
               <h3 className="text-base font-bold text-slate-900 dark:text-white">الإشعارات</h3>
-              <button onClick={() => setOpen(false)} className="p-2 rounded-xl hover:bg-white/60 dark:hover:bg-slate-800/60 transition cursor-pointer">
-                <X className="w-5 h-5 text-slate-500 dark:text-slate-400" />
-              </button>
+              <div className="flex items-center gap-2">
+                {unreadCount > 0 && (
+                  <button
+                    onClick={markAllAsRead}
+                    className="flex items-center gap-1.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition cursor-pointer"
+                  >
+                    <CheckCheck className="w-3.5 h-3.5" />
+                    تحديد الكل
+                  </button>
+                )}
+                <button onClick={() => setOpen(false)} className="p-2 rounded-xl hover:bg-white/60 dark:hover:bg-slate-800/60 transition cursor-pointer">
+                  <X className="w-5 h-5 text-slate-500 dark:text-slate-400" />
+                </button>
+              </div>
             </div>
-            <NotificationList notifications={notifications} markAsRead={markAsRead} />
+            <div className="flex-1 overflow-y-auto p-5 space-y-3 pb-12">
+              {notifications.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 text-slate-400 dark:text-slate-500">
+                  <Bell className="w-12 h-12 mb-3 opacity-40" />
+                  <p className="text-sm">لا توجد إشعارات</p>
+                </div>
+              ) : (
+                notifications.map((n) => (
+                  <NotificationItem
+                    key={n.id}
+                    notification={n}
+                    onMarkRead={() => markAsRead(n.id)}
+                  />
+                ))
+              )}
+            </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   )
