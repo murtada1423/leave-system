@@ -92,7 +92,7 @@ export default function NotificationBell() {
             className="md:hidden fixed bottom-0 left-0 right-0 z-50 max-h-[75vh] flex flex-col rounded-t-[28px] backdrop-blur-2xl bg-white/70 dark:bg-slate-900/70 border border-white/40 dark:border-slate-600/60 shadow-[0_-8px_30px_rgb(0,0,0,0.12)] animate-slide-up"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-5 border-b border-slate-100 dark:border-slate-700/30 flex items-center justify-between shrink-0">
+            <div className="shrink-0 p-5 border-b border-slate-100 dark:border-slate-700/30 flex items-center justify-between">
               <h3 className="text-base font-bold text-slate-900 dark:text-white">الإشعارات</h3>
               <div className="flex items-center gap-2">
                 {unreadCount > 0 && (
@@ -109,7 +109,7 @@ export default function NotificationBell() {
                 </button>
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto p-5 space-y-3 pb-12">
+            <div className="p-5 space-y-3 overflow-y-auto max-h-[60vh] pb-10">
               {notifications.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-slate-400 dark:text-slate-500">
                   <Bell className="w-12 h-12 mb-3 opacity-40" />
