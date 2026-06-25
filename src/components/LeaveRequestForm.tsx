@@ -37,11 +37,11 @@ function DatePickerNative({ value, onChange, required }: { value: string; onChan
         value={value}
         onChange={(e) => onChange(e.target.value)}
         required={required}
-        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+        className="absolute inset-0 w-full h-full opacity-0 z-10 cursor-pointer md:relative md:opacity-100 md:z-auto md:h-10 md:px-4 md:rounded-lg md:bg-white md:dark:bg-slate-900 md:border md:border-neutral-200 md:dark:border-slate-700/50 md:text-neutral-900 md:dark:text-white md:text-sm md:dark:[color-scheme:dark]"
         style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}
       />
       <div
-        className="flex items-center h-10 px-4 rounded-lg bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-700/50 text-neutral-900 dark:text-white text-sm pointer-events-none"
+        className="flex items-center h-10 px-4 rounded-lg bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-700/50 text-neutral-900 dark:text-white text-sm pointer-events-none md:hidden"
         style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}
       >
         <span className={`flex-1 text-right ${value ? '' : 'text-neutral-400 dark:text-slate-400'}`}>
