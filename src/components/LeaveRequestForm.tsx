@@ -1,13 +1,57 @@
-import { useState } from 'react'
-import { Send, Calendar, CalendarPlus, AlertCircle } from 'lucide-react'
+import { useState, useRef } from 'react'
+import { Send, Calendar, CalendarPlus, AlertCircle, ChevronDown } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card'
-import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { Select } from './ui/select'
 import { Textarea } from './ui/textarea'
 import { Button } from './ui/button'
 
 const LEAVE_TYPES = ['اعتيادية', 'مرضية', 'زمنية'] as const
+
+interface LeaveRequestFormProps {
+  onSubmit: (data: {
+    leave_type: string
+    start_date: string
+    end_date: string
+    duration_hours: number
+    reason: string
+  }) => Promise<void>
+  daysBalance: number
+  hourlyBalance: number
+}
+
+function formatDateDisplay(dateStr: string): string {
+  if (!dateStr) return ''
+  const [y, m, d] = dateStr.split('-')
+  return `${d} - ${m} - ${y}`
+}
+
+function DatePickerNative({ value, onChange, required }: { value: string; onChange: (v: string) => void; required?: boolean }) {
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  return (
+    <div className="relative w-full" dir="ltr">
+      <input
+        ref={inputRef}
+        type="date"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        required={required}
+        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+        style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}
+      />
+      <div
+        className="flex items-center h-10 px-4 rounded-lg bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-700/50 text-neutral-900 dark:text-white text-sm pointer-events-none"
+        style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}
+      >
+        <span className={`flex-1 text-right ${value ? '' : 'text-neutral-400 dark:text-slate-400'}`}>
+          {value ? <bdi dir="ltr">{formatDateDisplay(value)}</bdi> : 'اختر التاريخ'}
+        </span>
+        <ChevronDown className="w-4 h-4 text-neutral-400 dark:text-slate-400 mr-2 shrink-0" />
+      </div>
+    </div>
+  )
+}
 
 interface LeaveRequestFormProps {
   onSubmit: (data: {
@@ -131,29 +175,11 @@ export default function LeaveRequestForm({ onSubmit, daysBalance, hourlyBalance 
               </div>
               <div className="space-y-2">
                 <Label htmlFor="start-date">تاريخ البدء</Label>
-                <div dir="ltr">
-                  <Input
-                    id="start-date"
-                    type="date"
-                    className="w-full dark:[color-scheme:dark]"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    required
-                  />
-                </div>
+                <DatePickerNative value={startDate} onChange={setStartDate} required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="end-date">تاريخ الانتهاء</Label>
-                <div dir="ltr">
-                  <Input
-                    id="end-date"
-                    type="date"
-                    className="w-full dark:[color-scheme:dark]"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    required
-                  />
-                </div>
+                <DatePickerNative value={endDate} onChange={setEndDate} required />
               </div>
             </>
           )}
@@ -161,16 +187,7 @@ export default function LeaveRequestForm({ onSubmit, daysBalance, hourlyBalance 
           {isTimeLeave && (
             <div className="space-y-2">
               <Label htmlFor="single-date">تاريخ الإجازة</Label>
-              <div dir="ltr">
-                <Input
-                  id="single-date"
-                  type="date"
-                  className="w-full dark:[color-scheme:dark]"
-                  value={singleDate}
-                  onChange={(e) => setSingleDate(e.target.value)}
-                  required
-                />
-              </div>
+              <DatePickerNative value={singleDate} onChange={setSingleDate} required />
             </div>
           )}
 
