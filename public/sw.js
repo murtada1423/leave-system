@@ -10,6 +10,22 @@ self.addEventListener('fetch', () => {
   // required to trigger PWA install prompt
 })
 
+self.addEventListener('push', (e) => {
+  let data = { title: 'اجازاتي', body: '' }
+  try {
+    if (e.data) data = e.data.json()
+  } catch { /* */ }
+
+  const options = {
+    body: data.body || '',
+    icon: '/icon-512.svg',
+    badge: '/icon-192.svg',
+    vibrate: [200, 100, 200],
+  }
+
+  e.waitUntil(self.registration.showNotification(data.title || 'اجازاتي', options))
+})
+
 self.addEventListener('notificationclick', (e) => {
   e.notification.close()
   e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {

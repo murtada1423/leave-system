@@ -332,3 +332,82 @@ CREATE TRIGGER on_leave_request_update
   FOR EACH ROW
   WHEN (OLD.status = 'قيد الانتظار' AND NEW.status IS DISTINCT FROM OLD.status)
   EXECUTE FUNCTION notify_leave_status_change();
+
+-- ==================== PUSH SUBSCRIPTIONS TABLE ====================
+
+CREATE TABLE IF NOT EXISTS push_subscriptions (
+  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id    UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  endpoint   TEXT NOT NULL,
+  p256dh     TEXT NOT NULL,
+  auth       TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE(user_id, endpoint)
+);
+
+ALTER TABLE push_subscriptions ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Users can manage their own push subscriptions" ON push_subscriptions;
+
+CREATE POLICY "Users can manage their own push subscriptions"
+  ON push_subscriptions FOR ALL
+  USING (auth.uid() = user_id);
+
+-- ==================== APP CONFIG TABLE ====================
+-- جميع الإعدادات في قاعدة البيانات — لا حاجة لـ Environment Variables
+
+CREATE TABLE IF NOT EXISTS app_config (
+  key   TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+
+INSERT INTO app_config (key, value) VALUES
+  ('function_url', 'https://bbntytnzcavsedvmckkc.supabase.co'),
+  ('service_key', '<your_service_role_key_here>'),
+  ('vapid_public_key', 'BMn9QJDeeK63eMDTjee-g2MVhrXb4qhmJSnsBilULkPdtXJShG3ZzGAo0AlQYhUlPIbdHEHZR7n_N3dNgNfpga0'),
+  ('vapid_private_key', '22vOPJUpiJ5Fa4HPnbqJzQB9kPqIeoKX3tladso_LA8'),
+  ('vapid_email', 'admin@example.com')
+ON CONFLICT (key) DO NOTHING;
+
+-- ==================== TRIGGER: New notification → Call Edge Function for push ====================
+
+-- IMPORTANT: Enable pg_net extension first:
+--   SQL Editor → CREATE EXTENSION IF NOT EXISTS pg_net;
+--
+-- Then update the service_key in app_config:
+--   UPDATE app_config SET value = '<your_service_role_key>' WHERE key = 'service_key';
+
+CREATE OR REPLACE FUNCTION notify_push_on_notification()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  v_function_url TEXT;
+  v_service_key  TEXT;
+BEGIN
+  SELECT value INTO v_function_url FROM app_config WHERE key = 'function_url';
+  SELECT value INTO v_service_key  FROM app_config WHERE key = 'service_key';
+
+  IF v_function_url IS NULL OR v_service_key IS NULL THEN
+    RETURN NEW;
+  END IF;
+
+  PERFORM net.http_post(
+    url := v_function_url || '/functions/v1/send-push-notification',
+    headers := jsonb_build_object(
+      'Content-Type', 'application/json',
+      'Authorization', 'Bearer ' || v_service_key
+    ),
+    body := jsonb_build_object('notification_id', NEW.id)
+  );
+
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS on_notification_insert ON notifications;
+CREATE TRIGGER on_notification_insert
+  AFTER INSERT ON notifications
+  FOR EACH ROW
+  EXECUTE FUNCTION notify_push_on_notification();

@@ -24,10 +24,49 @@ export function useNotifications() {
   return useContext(NotificationContext)
 }
 
+function urlBase64ToUint8Array(base64: string): Uint8Array {
+  const padding = '='.repeat((4 - base64.length % 4) % 4)
+  const b64 = (base64 + padding).replace(/-/g, '+').replace(/_/g, '/')
+  const raw = atob(b64)
+  const arr = new Uint8Array(raw.length)
+  for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i)
+  return arr
+}
+
+async function subscribeToPush(userId: string) {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) return
+  if (Notification.permission !== 'granted') return
+
+  const vapidKey = import.meta.env.VITE_VAPID_PUBLIC_KEY
+  if (!vapidKey) {
+    console.warn('Push: VITE_VAPID_PUBLIC_KEY not set')
+    return
+  }
+
+  try {
+    const reg = await navigator.serviceWorker.ready
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(vapidKey) as BufferSource,
+    })
+
+    const json = sub.toJSON()
+    if (!json.endpoint || !json.keys) return
+
+    // Save to DB (upsert by endpoint)
+    await supabase.from('push_subscriptions').upsert({
+      user_id: userId,
+      endpoint: json.endpoint,
+      p256dh: json.keys.p256dh!,
+      auth: json.keys.auth!,
+    }, { onConflict: 'user_id, endpoint' })
+  } catch (err) {
+    console.warn('Push subscription failed:', err)
+  }
+}
+
 function showNativeNotification(title: string, body: string) {
   if (!('Notification' in window) || Notification.permission !== 'granted') return
-
-  // Try via Service Worker (works for installed PWAs)
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready.then((reg) => {
       reg.showNotification(title, { body, icon: '/icon-512.svg', badge: '/icon-192.svg' })
@@ -55,6 +94,7 @@ export function NotificationProvider({ userId, children }: { userId: string; chi
 
   useEffect(() => {
     fetchNotifications()
+    subscribeToPush(userId)
 
     const channel = supabase
       .channel('realtime_notifications')
