@@ -402,14 +402,20 @@ BEGIN
     RETURN NEW;
   END IF;
 
-  PERFORM net.http_post(
-    url := v_function_url || '/functions/v1/send-push-notification',
-    headers := jsonb_build_object(
-      'Content-Type', 'application/json',
-      'Authorization', 'Bearer ' || v_service_key
-    ),
-    body := jsonb_build_object('notification_id', NEW.id)
-  );
+  BEGIN
+    PERFORM net.http_post(
+      url := v_function_url || '/functions/v1/send-push-notification',
+      headers := jsonb_build_object(
+        'Content-Type', 'application/json',
+        'Authorization', 'Bearer ' || v_service_key
+      ),
+      body := jsonb_build_object('notification_id', NEW.id)
+    );
+  EXCEPTION WHEN OTHERS THEN
+    -- يتجاوز الخطأ (pg_net غير مثبت أو Edge Function معطلة)
+    -- الإشعار سيصل عبر Realtime + sonner toast على أي حال
+    NULL;
+  END;
 
   RETURN NEW;
 END;
