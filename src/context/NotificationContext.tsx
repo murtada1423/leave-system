@@ -25,12 +25,12 @@ export function useNotifications() {
 }
 
 function showNativeNotification(title: string, body: string) {
-  if ('Notification' in window && Notification.permission === 'granted') {
-    try {
-      new Notification(title, { body, icon: '/icon-192.svg' })
-    } catch {
-      // native notification not supported
-    }
+  if ('Notification' in window && Notification.permission === 'granted' && 'serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then((reg) => {
+      reg.showNotification(title, { body, icon: '/icon-192.svg', badge: '/icon-192.svg' })
+    }).catch(() => {
+      try { new Notification(title, { body, icon: '/icon-192.svg' }) } catch { /* not supported */ }
+    })
   }
 }
 
