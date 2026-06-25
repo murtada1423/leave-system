@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { LayoutDashboard, Users, LogOut, Info, X, Phone, Code, Menu, CalendarCheck, Sun, Moon } from 'lucide-react'
 import { Button } from './ui/button'
+import NotificationBell from './NotificationBell'
 
 interface SidebarProps {
   fullName: string
@@ -45,6 +46,11 @@ export default function Sidebar({ fullName, role, onLogout, activeView, onNaviga
         <LogOut className="w-5 h-5" />
       </button>
 
+      {/* Mobile notification bell */}
+      <div className="fixed top-4 left-28 z-40 md:hidden">
+        <NotificationBell />
+      </div>
+
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
@@ -55,7 +61,12 @@ export default function Sidebar({ fullName, role, onLogout, activeView, onNaviga
 
       <aside className={`w-[var(--sidebar-width)] h-screen bg-white/70 dark:bg-slate-900/80 backdrop-blur-2xl border-l border-slate-200 dark:border-slate-700/50 flex flex-col fixed right-0 top-0 z-40 transition-transform duration-300 md:translate-x-0 ${sidebarOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="p-6 border-b border-slate-100 dark:border-slate-700/50">
-          <h1 className="text-xl font-bold text-slate-900 dark:text-white">نظام إدارة الإجازات</h1>
+          <div className="flex items-center justify-between">
+            <h1 className="text-xl font-bold text-slate-900 dark:text-white">نظام إدارة الإجازات</h1>
+            <div className="hidden md:block">
+              <NotificationBell />
+            </div>
+          </div>
         </div>
 
         <div className="p-6 border-b border-slate-100 dark:border-slate-700/50">

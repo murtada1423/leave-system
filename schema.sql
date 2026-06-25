@@ -234,3 +234,101 @@ CREATE OR REPLACE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW
   EXECUTE FUNCTION handle_new_user();
+
+-- ==================== NOTIFICATIONS TABLE ====================
+
+CREATE TABLE IF NOT EXISTS notifications (
+  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id    UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  title      TEXT NOT NULL,
+  message    TEXT NOT NULL,
+  type       TEXT NOT NULL DEFAULT 'info' CHECK (type IN ('info', 'success', 'warning', 'error')),
+  is_read    BOOLEAN NOT NULL DEFAULT false,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_notifications_user_read ON notifications(user_id, is_read);
+
+ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Users can view their own notifications" ON notifications;
+DROP POLICY IF EXISTS "Users can update their own notifications" ON notifications;
+
+CREATE POLICY "Users can view their own notifications"
+  ON notifications FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own notifications"
+  ON notifications FOR UPDATE
+  USING (auth.uid() = user_id);
+
+-- IMPORTANT: After creating this table, enable Realtime (Replication) for it
+-- in the Supabase Dashboard under Database > Replication.
+
+-- ==================== TRIGGER: New leave request → Notify all admins ====================
+
+CREATE OR REPLACE FUNCTION notify_new_leave_request()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  v_employee_name TEXT;
+BEGIN
+  SELECT full_name INTO v_employee_name FROM profiles WHERE id = NEW.employee_id;
+
+  INSERT INTO notifications (user_id, title, message, type)
+  SELECT
+    p.id,
+    'طلب إجازة جديد',
+    'قام ' || v_employee_name || ' بتقديم طلب إجازة ' || NEW.leave_type,
+    'info'
+  FROM profiles p
+  WHERE p.role = 'admin';
+
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS on_leave_request_insert ON leave_requests;
+CREATE TRIGGER on_leave_request_insert
+  AFTER INSERT ON leave_requests
+  FOR EACH ROW
+  EXECUTE FUNCTION notify_new_leave_request();
+
+-- ==================== TRIGGER: Leave request status change → Notify employee ====================
+
+CREATE OR REPLACE FUNCTION notify_leave_status_change()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+  IF NEW.status = 'مقبولة' THEN
+    INSERT INTO notifications (user_id, title, message, type)
+    VALUES (
+      NEW.employee_id,
+      'تم قبول طلب الإجازة',
+      'تم قبول طلب إجازتك (' || NEW.leave_type || ')',
+      'success'
+    );
+  ELSIF NEW.status = 'مرفوضة' THEN
+    INSERT INTO notifications (user_id, title, message, type)
+    VALUES (
+      NEW.employee_id,
+      'تم رفض طلب الإجازة',
+      'تم رفض طلب إجازتك (' || NEW.leave_type || ')' || CASE WHEN NEW.rejection_reason IS NOT NULL AND NEW.rejection_reason <> '' THEN '. سبب الرفض: ' || NEW.rejection_reason ELSE '' END,
+      'error'
+    );
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS on_leave_request_update ON leave_requests;
+CREATE TRIGGER on_leave_request_update
+  AFTER UPDATE OF status ON leave_requests
+  FOR EACH ROW
+  WHEN (OLD.status = 'قيد الانتظار' AND NEW.status IS DISTINCT FROM OLD.status)
+  EXECUTE FUNCTION notify_leave_status_change();

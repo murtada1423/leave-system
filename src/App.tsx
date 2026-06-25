@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { type Session } from '@supabase/supabase-js'
+import { Toaster } from 'sonner'
 import { supabase } from './lib/supabase'
+import { NotificationProvider } from './context/NotificationContext'
 import LoginPage from './components/LoginPage'
 import EmployeeDashboard from './components/EmployeeDashboard'
 import AdminDashboard from './components/AdminDashboard'
@@ -93,6 +95,20 @@ export default function App() {
 
   if (!session) return <LoginPage onLogin={handleLogin} />
 
-  if (profile?.role === 'admin') return <AdminDashboard userId={session.user.id} onLogout={() => supabase.auth.signOut()} />
-  return <EmployeeDashboard userId={session.user.id} onLogout={() => supabase.auth.signOut()} />
+  const dashboard = profile?.role === 'admin'
+    ? <AdminDashboard userId={session.user.id} onLogout={() => supabase.auth.signOut()} />
+    : <EmployeeDashboard userId={session.user.id} onLogout={() => supabase.auth.signOut()} />
+
+  return (
+    <NotificationProvider userId={session.user.id}>
+      {dashboard}
+      <Toaster
+        position="top-left"
+        richColors
+        closeButton
+        dir="rtl"
+        duration={5000}
+      />
+    </NotificationProvider>
+  )
 }
