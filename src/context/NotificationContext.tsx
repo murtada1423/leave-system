@@ -25,12 +25,17 @@ export function useNotifications() {
 }
 
 function showNativeNotification(title: string, body: string) {
-  if ('Notification' in window && Notification.permission === 'granted' && 'serviceWorker' in navigator) {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return
+
+  // Try via Service Worker (works for installed PWAs)
+  if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready.then((reg) => {
-      reg.showNotification(title, { body, icon: '/icon-192.svg', badge: '/icon-192.svg' })
+      reg.showNotification(title, { body, icon: '/icon-512.svg', badge: '/icon-192.svg' })
     }).catch(() => {
-      try { new Notification(title, { body, icon: '/icon-192.svg' }) } catch { /* not supported */ }
+      try { new Notification(title, { body, icon: '/icon-512.svg' }) } catch { /* */ }
     })
+  } else {
+    try { new Notification(title, { body, icon: '/icon-512.svg' }) } catch { /* */ }
   }
 }
 

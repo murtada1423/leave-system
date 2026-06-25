@@ -1,7 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
-  <rect width="192" height="192" rx="32" fill="#4f46e5"/>
-  <rect x="36" y="48" width="120" height="96" rx="12" fill="none" stroke="#fff" stroke-width="8"/>
-  <path d="M66 72 L96 56 L126 72" stroke="#fff" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M96 56 L96 128" stroke="#fff" stroke-width="8" stroke-linecap="round"/>
-  <path d="M72 100 L96 84 L120 100" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4f46e5"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+  </defs>
+  <rect width="192" height="192" rx="36" fill="url(#bg)"/>
+  <rect x="36" y="44" width="120" height="120" rx="14" fill="none" stroke="#fff" stroke-width="7"/>
+  <path d="M36 78h120" stroke="#fff" stroke-width="7" opacity="0.3"/>
+  <circle cx="64" cy="112" r="6" fill="#22c55e"/>
+  <path d="m58 112 4 4 8-8" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="56" y="26" width="8" height="18" rx="4" fill="#fff" opacity="0.5"/>
+  <rect x="104" y="26" width="8" height="18" rx="4" fill="#fff" opacity="0.5"/>
 </svg>
