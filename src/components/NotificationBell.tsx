@@ -36,6 +36,7 @@ export default function NotificationBell() {
   const { unreadCount, notifications, markAsRead, markAllAsRead } = useNotifications()
   const [open, setOpen] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
+  const mobileRef = useRef<HTMLDivElement>(null)
   const btnRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
@@ -43,6 +44,8 @@ export default function NotificationBell() {
       if (
         panelRef.current &&
         !panelRef.current.contains(e.target as Node) &&
+        mobileRef.current &&
+        !mobileRef.current.contains(e.target as Node) &&
         btnRef.current &&
         !btnRef.current.contains(e.target as Node)
       ) {
@@ -54,42 +57,45 @@ export default function NotificationBell() {
   }, [open])
 
   return (
-    <div className="relative">
-      <button
-        ref={btnRef}
-        onClick={() => setOpen((prev) => !prev)}
-        className="relative w-10 h-10 rounded-2xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 shadow-sm flex items-center justify-center cursor-pointer hover:bg-white dark:hover:bg-slate-700/80 transition"
-        aria-label="الإشعارات"
-      >
-        {unreadCount > 0 ? (
-          <BellRing className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-        ) : (
-          <Bell className="w-5 h-5 text-slate-600 dark:text-slate-400" />
-        )}
-        {unreadCount > 0 && (
-          <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1.5 rounded-full bg-gradient-to-br from-red-500 to-red-600 text-white text-[10px] font-bold flex items-center justify-center shadow-lg shadow-red-200 dark:shadow-red-900/40">
-            {unreadCount > 99 ? '99+' : unreadCount}
-          </span>
-        )}
-      </button>
-
-      {/* Desktop dropdown */}
-      {open && (
-        <div
-          ref={panelRef}
-          className="hidden md:flex absolute top-full right-0 left-auto mt-2 w-80 flex-col rounded-3xl backdrop-blur-2xl bg-white/70 dark:bg-slate-900/70 border border-white/40 dark:border-slate-600/60 shadow-2xl shadow-black/10 dark:shadow-black/30 z-50 origin-top-left animate-fade-in max-h-[70vh]"
+    <>
+      <div className="relative">
+        <button
+          ref={btnRef}
+          onClick={() => setOpen((prev) => !prev)}
+          className="relative w-10 h-10 rounded-2xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 shadow-sm flex items-center justify-center cursor-pointer hover:bg-white dark:hover:bg-slate-700/80 transition"
+          aria-label="الإشعارات"
         >
-          <NotificationPanelHeader unreadCount={unreadCount} markAllAsRead={markAllAsRead} />
-          <NotificationList notifications={notifications} markAsRead={markAsRead} />
-        </div>
-      )}
+          {unreadCount > 0 ? (
+            <BellRing className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+          ) : (
+            <Bell className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+          )}
+          {unreadCount > 0 && (
+            <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1.5 rounded-full bg-gradient-to-br from-red-500 to-red-600 text-white text-[10px] font-bold flex items-center justify-center shadow-lg shadow-red-200 dark:shadow-red-900/40">
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </span>
+          )}
+        </button>
 
-      {/* Mobile bottom sheet */}
+        {/* Desktop dropdown */}
+        {open && (
+          <div
+            ref={panelRef}
+            className="hidden md:flex absolute top-full right-0 left-auto mt-2 w-80 flex-col rounded-3xl backdrop-blur-2xl bg-white/70 dark:bg-slate-900/70 border border-white/40 dark:border-slate-600/60 shadow-2xl shadow-black/10 dark:shadow-black/30 z-50 origin-top-left animate-fade-in max-h-[70vh]"
+          >
+            <NotificationPanelHeader unreadCount={unreadCount} markAllAsRead={markAllAsRead} />
+            <NotificationList notifications={notifications} markAsRead={markAsRead} />
+          </div>
+        )}
+      </div>
+
+      {/* Mobile bottom sheet — خارج relative لمنع تعارض stacking context */}
       {open && (
         <>
-          <div className="md:hidden fixed inset-0 z-40 bg-black/30 backdrop-blur-sm" onClick={() => setOpen(false)} />
+          <div className="md:hidden fixed inset-0 z-40 bg-black/50" onClick={() => setOpen(false)} />
           <div
-            className="md:hidden fixed bottom-0 left-0 right-0 z-50 max-h-[75vh] flex flex-col rounded-t-[28px] backdrop-blur-2xl bg-white/70 dark:bg-slate-900/70 border border-white/40 dark:border-slate-600/60 shadow-[0_-8px_30px_rgb(0,0,0,0.12)] animate-slide-up"
+            ref={mobileRef}
+            className="md:hidden fixed bottom-0 inset-x-0 z-50 max-h-[75vh] flex flex-col rounded-t-[28px] bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700/60 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="shrink-0 p-5 border-b border-slate-100 dark:border-slate-700/30 flex items-center justify-between">
@@ -109,7 +115,7 @@ export default function NotificationBell() {
                 </button>
               </div>
             </div>
-            <div className="p-5 space-y-3 overflow-y-auto max-h-[60vh] pb-10">
+            <div className="overflow-y-auto max-h-[60vh] p-5 space-y-3 pb-10">
               {notifications.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-slate-400 dark:text-slate-500">
                   <Bell className="w-12 h-12 mb-3 opacity-40" />
@@ -128,7 +134,7 @@ export default function NotificationBell() {
           </div>
         </>
       )}
-    </div>
+    </>
   )
 }
 
