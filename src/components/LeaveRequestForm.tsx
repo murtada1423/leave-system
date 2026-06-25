@@ -1,6 +1,7 @@
-import { useState, useRef } from 'react'
-import { Send, Calendar, CalendarPlus, AlertCircle, ChevronDown } from 'lucide-react'
+import { useState } from 'react'
+import { Send, Calendar, CalendarPlus, AlertCircle } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card'
+import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { Select } from './ui/select'
 import { Textarea } from './ui/textarea'
@@ -18,41 +19,6 @@ interface LeaveRequestFormProps {
   }) => Promise<void>
   daysBalance: number
   hourlyBalance: number
-}
-
-function formatDateDisplay(dateStr: string): string {
-  if (!dateStr) return ''
-  const [y, m, d] = dateStr.split('-')
-  return `${d} - ${m} - ${y}`
-}
-
-function DatePickerOverlay({ value, onChange, required, disabled }: { value: string; onChange: (v: string) => void; required?: boolean; disabled?: boolean }) {
-  const inputRef = useRef<HTMLInputElement>(null)
-
-  return (
-    <div className="relative w-full" dir="ltr">
-      <input
-        ref={inputRef}
-        type="date"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        required={required}
-        disabled={disabled}
-        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-        style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}
-      />
-      <div
-        className="flex items-center h-12 px-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-900 dark:text-white text-sm focus-within:ring-2 focus-within:ring-indigo-400/50 focus-within:border-indigo-400 transition select-none"
-        onClick={() => inputRef.current?.showPicker?.() ?? inputRef.current?.click()}
-        style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}
-      >
-        <span className={`flex-1 text-right ${value ? '' : 'text-neutral-400 dark:text-slate-400'}`}>
-          {value ? <bdi dir="ltr">{formatDateDisplay(value)}</bdi> : 'اختر التاريخ'}
-        </span>
-        <ChevronDown className="w-4 h-4 text-neutral-400 dark:text-slate-400 mr-2 shrink-0 pointer-events-none" />
-      </div>
-    </div>
-  )
 }
 
 export default function LeaveRequestForm({ onSubmit, daysBalance, hourlyBalance }: LeaveRequestFormProps) {
@@ -165,11 +131,29 @@ export default function LeaveRequestForm({ onSubmit, daysBalance, hourlyBalance 
               </div>
               <div className="space-y-2">
                 <Label htmlFor="start-date">تاريخ البدء</Label>
-                <DatePickerOverlay value={startDate} onChange={setStartDate} required />
+                <div dir="ltr">
+                  <Input
+                    id="start-date"
+                    type="date"
+                    className="w-full dark:[color-scheme:dark]"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    required
+                  />
+                </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="end-date">تاريخ الانتهاء</Label>
-                <DatePickerOverlay value={endDate} onChange={setEndDate} required />
+                <div dir="ltr">
+                  <Input
+                    id="end-date"
+                    type="date"
+                    className="w-full dark:[color-scheme:dark]"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    required
+                  />
+                </div>
               </div>
             </>
           )}
@@ -177,7 +161,16 @@ export default function LeaveRequestForm({ onSubmit, daysBalance, hourlyBalance 
           {isTimeLeave && (
             <div className="space-y-2">
               <Label htmlFor="single-date">تاريخ الإجازة</Label>
-              <DatePickerOverlay value={singleDate} onChange={setSingleDate} required />
+              <div dir="ltr">
+                <Input
+                  id="single-date"
+                  type="date"
+                  className="w-full dark:[color-scheme:dark]"
+                  value={singleDate}
+                  onChange={(e) => setSingleDate(e.target.value)}
+                  required
+                />
+              </div>
             </div>
           )}
 

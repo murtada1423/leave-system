@@ -190,9 +190,7 @@ export default function ExportModal({ open, onClose, allRecords, employees }: Ex
                     type="date"
                     value={dateFrom}
                     onChange={(e) => setDateFrom(e.target.value)}
-                    className="w-full h-12 px-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400 transition number dark:[color-scheme:dark] text-right"
-                    dir="ltr"
-                    style={{ direction: 'ltr', unicodeBidi: 'isolate' }}
+                    className="w-full h-12 px-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400 transition number dark:[color-scheme:dark]"
                   />
                 </div>
               </div>
@@ -203,9 +201,7 @@ export default function ExportModal({ open, onClose, allRecords, employees }: Ex
                     type="date"
                     value={dateTo}
                     onChange={(e) => setDateTo(e.target.value)}
-                    className="w-full h-12 px-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400 transition number dark:[color-scheme:dark] text-right"
-                    dir="ltr"
-                    style={{ direction: 'ltr', unicodeBidi: 'isolate' }}
+                    className="w-full h-12 px-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400 transition number dark:[color-scheme:dark]"
                   />
                 </div>
               </div>
