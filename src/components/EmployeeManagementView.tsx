@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { Search, Plus, Edit2, Trash2, Users, AlertCircle, History, CalendarPlus, Shield, User } from 'lucide-react'
+import { Search, Plus, Edit2, Trash2, Users, AlertCircle, CalendarPlus, Shield, User } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import EmployeeModal from './EmployeeModal'
 import LeaveHistoryModal from './LeaveHistoryModal'
