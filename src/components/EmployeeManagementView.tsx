@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { Search, Plus, Edit2, Trash2, Users, AlertCircle, History, CalendarPlus } from 'lucide-react'
+import { Search, Plus, Edit2, Trash2, Users, AlertCircle, History, CalendarPlus, Shield, User } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import EmployeeModal from './EmployeeModal'
 import LeaveHistoryModal from './LeaveHistoryModal'
@@ -47,6 +47,15 @@ export default function EmployeeManagementView({ employees, loading, onRefresh, 
   }
 
   const handleDelete = async (id: string) => {
+    const target = employees.find((e) => e.id === id)
+    if (target?.role === 'admin') {
+      const adminCount = employees.filter((e) => e.role === 'admin').length
+      if (adminCount <= 1) {
+        alert('لا يمكن حذف المدير الوحيد. يجب وجود مدير واحد على الأقل.')
+        setDeleteConfirm(null)
+        return
+      }
+    }
     setDeleting(true)
     try {
       const { error } = await supabase.rpc('admin_delete_user', { target_id: id })
@@ -147,8 +156,8 @@ export default function EmployeeManagementView({ employees, loading, onRefresh, 
                   >
                     <td className="py-4 px-4 font-medium text-neutral-900 dark:text-white">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center shrink-0 shadow-sm shadow-indigo-200 dark:shadow-indigo-900/30">
-                          <History className="w-4 h-4 text-white" />
+                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 shadow-sm ${emp.role === 'admin' ? 'bg-gradient-to-br from-amber-500 to-orange-600 shadow-amber-200 dark:shadow-amber-900/30' : 'bg-gradient-to-br from-indigo-500 to-indigo-600 shadow-indigo-200 dark:shadow-indigo-900/30'}`}>
+                          {emp.role === 'admin' ? <Shield className="w-4 h-4 text-white" /> : <User className="w-4 h-4 text-white" />}
                         </div>
                         <span>{emp.full_name}</span>
                       </div>

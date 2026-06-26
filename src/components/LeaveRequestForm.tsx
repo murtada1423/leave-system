@@ -74,8 +74,8 @@ export default function LeaveRequestForm({ onSubmit, daysBalance, hourlyBalance 
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
 
-  const todayStr = new Date().toISOString().split('T')[0]
-  const tomorrowStr = new Date(Date.now() + 86400000).toISOString().split('T')[0]
+  const todayStr = new Date().toLocaleDateString('en-CA')
+  const d = new Date(); d.setDate(d.getDate() + 1); const tomorrowStr = d.toLocaleDateString('en-CA')
 
   const isTimeLeave = leaveType === 'زمنية'
   const isDayLeave = leaveType === 'اعتيادية' || leaveType === 'مرضية'

@@ -329,14 +329,13 @@ export default function AdminDashboard({ userId, onLogout }: AdminDashboardProps
   }, [userId])
 
   const todayStr = useMemo(() => {
-    const d = new Date()
-    return d.toISOString().split('T')[0]
+    return new Date().toLocaleDateString('en-CA')
   }, [])
 
   const tomorrowStr = useMemo(() => {
     const d = new Date()
     d.setDate(d.getDate() + 1)
-    return d.toISOString().split('T')[0]
+    return d.toLocaleDateString('en-CA')
   }, [])
 
   const onLeaveTodayEmployeeIds = useMemo(() => {

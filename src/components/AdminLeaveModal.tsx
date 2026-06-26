@@ -150,7 +150,7 @@ export default function AdminLeaveModal({ open, employees, onClose, onSaved, adm
     }
   }
 
-  const todayStr = new Date().toISOString().split('T')[0]
+  const todayStr = new Date().toLocaleDateString('en-CA')
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm" onClick={onClose}>
