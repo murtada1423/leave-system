@@ -117,10 +117,10 @@ export default function EmployeeManagementView({ employees, loading, onRefresh, 
             <thead>
               <tr className="border-b border-neutral-100 dark:border-slate-700/50 sticky top-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm z-10">
                 <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">اسم الموظف</th>
-                <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">الصلاحيات</th>
                 <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">رصيد الأيام</th>
                 <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">رصيد الساعات</th>
                 <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">تاريخ التسجيل</th>
+                <th className="text-right py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">الصلاحيات</th>
                 <th className="text-center py-3 px-4 font-medium text-neutral-500 dark:text-slate-400">إجراءات</th>
               </tr>
             </thead>
@@ -153,14 +153,14 @@ export default function EmployeeManagementView({ employees, loading, onRefresh, 
                         <span>{emp.full_name}</span>
                       </div>
                     </td>
+                    <td className="py-4 px-4 number text-neutral-900 dark:text-white">{emp.days_balance}</td>
+                    <td className="py-4 px-4 number text-neutral-900 dark:text-white">{emp.hourly_balance}</td>
+                    <td className="py-4 px-4 number text-neutral-500 dark:text-slate-400 text-xs">{new Date(emp.created_at).toLocaleDateString('en-GB')}</td>
                     <td className="py-4 px-4 text-neutral-600 dark:text-slate-300">
                       <span className={`inline-flex items-center justify-center w-[70px] h-7 rounded-xl text-xs font-medium ${emp.role === 'admin' ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-600 dark:text-white' : 'bg-slate-100 text-slate-600 dark:bg-slate-600 dark:text-slate-200'}`}>
                         {emp.role === 'admin' ? 'مدير' : 'موظف'}
                       </span>
                     </td>
-                    <td className="py-4 px-4 number text-neutral-900 dark:text-white">{emp.days_balance}</td>
-                    <td className="py-4 px-4 number text-neutral-900 dark:text-white">{emp.hourly_balance}</td>
-                    <td className="py-4 px-4 number text-neutral-500 dark:text-slate-400 text-xs">{new Date(emp.created_at).toLocaleDateString('en-GB')}</td>
                     <td className="py-4 px-4">
                       <div className="flex items-center justify-center gap-2" onClick={(e) => e.stopPropagation()}>
                         <button

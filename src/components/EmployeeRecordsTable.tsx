@@ -35,22 +35,22 @@ export default function EmployeeRecordsTable({ employees, loading }: EmployeeRec
             <TableHeader>
               <TableRow>
                 <TableHead>اسم الموظف</TableHead>
-                <TableHead>الصلاحيات</TableHead>
                 <TableHead>رصيد الأيام</TableHead>
                 <TableHead>رصيد الساعات</TableHead>
                 <TableHead>تاريخ التسجيل</TableHead>
+                <TableHead>الصلاحيات</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {employees.map((emp) => (
                 <TableRow key={emp.id}>
                   <TableCell className="font-medium">{emp.full_name}</TableCell>
-                  <TableCell>
-                    {emp.role === 'admin' ? 'مدير النظام' : 'موظف'}
-                  </TableCell>
                   <TableCell className="number">{emp.days_balance}</TableCell>
                   <TableCell className="number">{emp.hourly_balance}</TableCell>
                   <TableCell className="number">{new Date(emp.created_at).toLocaleDateString('en-GB')}</TableCell>
+                  <TableCell>
+                    {emp.role === 'admin' ? 'مدير النظام' : 'موظف'}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
