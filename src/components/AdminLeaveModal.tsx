@@ -21,8 +21,13 @@ interface AdminLeaveModalProps {
 
 function formatDateDisplay(dateStr: string): string {
   if (!dateStr) return ''
-  const [y, m, d] = dateStr.split('-')
-  return `${d} - ${m} - ${y}`
+  const safeInput = dateStr.replace(/-/g, '/')
+  const date = new Date(safeInput)
+  if (isNaN(date.getTime())) return dateStr
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
 }
 
 function DatePickerNative({ value, onChange, required, min, max }: { value: string; onChange: (v: string) => void; required?: boolean; min?: string; max?: string }) {
