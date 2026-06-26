@@ -168,7 +168,7 @@ export default function Sidebar({ fullName, role, onLogout, activeView, onNaviga
               </div>
             </div>
 
-            <p className="text-center text-xs text-neutral-400 dark:text-slate-500 number font-medium" dir="ltr">رقم الاصدار 1.6</p>
+            <p className="text-center text-xs text-neutral-400 dark:text-slate-500 number font-medium" dir="ltr">رقم الاصدار 1.7</p>
 
             <button
               onClick={() => setAboutOpen(false)}
