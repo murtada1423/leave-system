@@ -1,4 +1,4 @@
-import { User, X } from 'lucide-react'
+import { User, X, Shield } from 'lucide-react'
 
 interface EmployeeRecord {
   id: string
@@ -38,8 +38,8 @@ export default function AttendanceModal({ title, employees, open, onClose }: Att
                 key={emp.id}
                 className="flex items-center gap-4 p-4 rounded-2xl bg-white/60 dark:bg-slate-800/50 border border-neutral-100 dark:border-slate-700/30"
               >
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center shrink-0 shadow-sm shadow-indigo-200 dark:shadow-indigo-900/30">
-                  <User className="w-5 h-5 text-white" />
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-sm ${emp.role === 'admin' ? 'bg-gradient-to-br from-amber-500 to-orange-600 shadow-amber-200 dark:shadow-amber-900/30' : 'bg-gradient-to-br from-indigo-500 to-indigo-600 shadow-indigo-200 dark:shadow-indigo-900/30'}`}>
+                  {emp.role === 'admin' ? <Shield className="w-5 h-5 text-white" /> : <User className="w-5 h-5 text-white" />}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-neutral-900 dark:text-white truncate">{emp.full_name}</p>
