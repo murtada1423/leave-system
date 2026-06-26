@@ -69,12 +69,12 @@ function showNativeNotification(title: string, body: string) {
   if (!('Notification' in window) || Notification.permission !== 'granted') return
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready.then((reg) => {
-      reg.showNotification(title, { body, icon: '/icon-512.svg', badge: '/icon-192.svg' })
+      reg.showNotification(title, { body, icon: '/icon-512.png', badge: '/icon-192.png' })
     }).catch(() => {
-      try { new Notification(title, { body, icon: '/icon-512.svg' }) } catch { /* */ }
+      try { new Notification(title, { body, icon: '/icon-512.png' }) } catch { /* */ }
     })
   } else {
-    try { new Notification(title, { body, icon: '/icon-512.svg' }) } catch { /* */ }
+    try { new Notification(title, { body, icon: '/icon-512.png' }) } catch { /* */ }
   }
 }
 
