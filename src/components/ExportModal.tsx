@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { X, User, Download, FileSpreadsheet, AlertCircle, CheckCircle } from 'lucide-react'
+import { useState, useRef } from 'react'
+import { X, User, Download, FileSpreadsheet, AlertCircle, CheckCircle, ChevronDown } from 'lucide-react'
 
 interface LeaveRecord {
   id: string
@@ -31,6 +31,44 @@ function formatDurationDays(start: string, end: string): string {
   const s = new Date(start), e = new Date(end)
   const days = Math.floor((e.getTime() - s.getTime()) / 86400000) + 1
   return `${days} يـوم`
+}
+
+function formatDateDisplay(dateStr: string): string {
+  if (!dateStr) return ''
+  const safeInput = dateStr.replace(/-/g, '/')
+  const date = new Date(safeInput)
+  if (isNaN(date.getTime())) return dateStr
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+function DatePickerNative({ value, onChange, required }: { value: string; onChange: (v: string) => void; required?: boolean }) {
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  return (
+    <div className="relative w-full" dir="ltr">
+      <input
+        ref={inputRef}
+        type="date"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        required={required}
+        className="absolute inset-0 w-full h-full opacity-0 z-10 cursor-pointer md:relative md:opacity-100 md:z-auto md:h-12 md:px-4 md:rounded-2xl md:bg-white/80 md:dark:bg-slate-900/80 md:border md:border-neutral-200 md:dark:border-slate-700/50 md:text-neutral-900 md:dark:text-white md:text-sm md:dark:[color-scheme:dark]"
+        style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}
+      />
+      <div
+        className="flex items-center h-12 px-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-900 dark:text-white text-sm pointer-events-none md:hidden"
+        style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}
+      >
+        <span className={`flex-1 text-right ${value ? '' : 'text-neutral-400 dark:text-slate-400'}`}>
+          {value ? <bdi dir="ltr">{formatDateDisplay(value)}</bdi> : 'اختر التاريخ'}
+        </span>
+        <ChevronDown className="w-4 h-4 text-neutral-400 dark:text-slate-400 mr-2 shrink-0" />
+      </div>
+    </div>
+  )
 }
 
 export default function ExportModal({ open, onClose, allRecords, employees }: ExportModalProps) {
@@ -185,25 +223,11 @@ export default function ExportModal({ open, onClose, allRecords, employees }: Ex
             <label className="block text-sm font-medium text-neutral-700 dark:text-slate-200">نطاق التاريخ (اختياري)</label>
             <div className="flex items-center gap-3">
               <div className="flex-1">
-                <div dir="ltr">
-                  <input
-                    type="date"
-                    value={dateFrom}
-                    onChange={(e) => setDateFrom(e.target.value)}
-                    className="w-full h-12 px-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400 transition number dark:[color-scheme:dark]"
-                  />
-                </div>
+                <DatePickerNative value={dateFrom} onChange={setDateFrom} />
               </div>
               <span className="text-neutral-300 dark:text-slate-600 shrink-0 select-none">—</span>
               <div className="flex-1">
-                <div dir="ltr">
-                  <input
-                    type="date"
-                    value={dateTo}
-                    onChange={(e) => setDateTo(e.target.value)}
-                    className="w-full h-12 px-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-neutral-200 dark:border-slate-700/50 text-neutral-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400 transition number dark:[color-scheme:dark]"
-                  />
-                </div>
+                <DatePickerNative value={dateTo} onChange={setDateTo} />
               </div>
             </div>
             <p className="text-xs text-neutral-400 dark:text-slate-400">اترك الحقول فارغة لتصدير جميع البيانات</p>
