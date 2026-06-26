@@ -11,13 +11,13 @@ self.addEventListener('fetch', () => {
 })
 
 self.addEventListener('push', (e) => {
-  let data = { title: 'اجازاتي', body: '' }
+  let data = { title: '', message: '' }
   try {
     if (e.data) data = e.data.json()
   } catch { /* */ }
 
   const options = {
-    body: data.body || '',
+    body: data.message || data.body || '',
     icon: '/icon-512.png',
     badge: '/icon-192.png',
     vibrate: [200, 100, 200],
