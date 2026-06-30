@@ -71,6 +71,10 @@ export default function EmployeeModal({ open, editData, onClose, onSaved }: Empl
           .update({ full_name: form.full_name.trim(), role: form.role, days_balance: form.days_balance, hourly_balance: form.hourly_balance })
           .eq('id', editData.id)
         if (updateErr) throw updateErr
+        if (form.password) {
+          const { error: pwdErr } = await supabase.rpc('admin_update_password', { target_id: editData.id, new_password: form.password })
+          if (pwdErr) throw pwdErr
+        }
       } else {
         const { createClient } = await import('@supabase/supabase-js')
         const supabaseUrl = import.meta.env.VITE_SUPABASE_URL

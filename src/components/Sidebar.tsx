@@ -121,7 +121,7 @@ export default function Sidebar({ fullName, role, onLogout, activeView, onNaviga
           </Button>
         </div>
 
-        <div className="px-4 pb-4">
+        <div className="px-4 pb-4 hidden md:block">
           <Button
             variant="ghost"
             className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40"

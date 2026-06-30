@@ -126,8 +126,8 @@ AS $$
 BEGIN
   UPDATE profiles
   SET
-    days_balance   = days_balance + 3,
-    hourly_balance = hourly_balance + 2;
+    days_balance   = 3,
+    hourly_balance = 2;
 END;
 $$;
 
@@ -207,6 +207,24 @@ BEGIN
 
   DELETE FROM public.profiles WHERE id = target_id;
   DELETE FROM auth.users WHERE id = target_id;
+END;
+$$;
+
+-- ==================== ADMIN UPDATE PASSWORD FUNCTION ====================
+
+CREATE OR REPLACE FUNCTION admin_update_password(target_id UUID, new_password TEXT)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+  IF NOT public.is_admin() THEN
+    RAISE EXCEPTION 'Only admins can update passwords';
+  END IF;
+
+  UPDATE auth.users
+  SET encrypted_password = crypt(new_password, gen_salt('bf'))
+  WHERE id = target_id;
 END;
 $$;
 
