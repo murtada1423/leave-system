@@ -225,6 +225,8 @@ BEGIN
   UPDATE auth.users
   SET encrypted_password = crypt(new_password, gen_salt('bf'))
   WHERE id = target_id;
+
+  DELETE FROM auth.sessions WHERE user_id = target_id;
 END;
 $$;
 
