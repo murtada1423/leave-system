@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { type Session } from '@supabase/supabase-js'
 import { Toaster } from 'sonner'
 import { supabase } from './lib/supabase'
@@ -17,7 +17,7 @@ export default function App() {
   const [session, setSession] = useState<Session | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
-  const passwordVersionRef = useRef<string | null>(null)
+  const [passwordVersion, setPasswordVersion] = useState<string | null>(null)
 
   useEffect(() => {
     if ('Notification' in window && Notification.permission === 'default') {
@@ -53,20 +53,20 @@ export default function App() {
 
   // مراقبة تغيير كلمة المرور — تسجيل خروج فوري
   useEffect(() => {
-    if (!session?.user?.id || !passwordVersionRef.current) return
+    if (!session?.user?.id || !passwordVersion) return
     const interval = setInterval(async () => {
       const { data } = await supabase
         .from('profiles')
         .select('password_changed_at')
         .eq('id', session.user.id)
         .single()
-      if (data && data.password_changed_at !== passwordVersionRef.current) {
+      if (data && data.password_changed_at !== passwordVersion) {
         await supabase.auth.signOut()
         window.location.reload()
       }
     }, 10000)
     return () => clearInterval(interval)
-  }, [session?.user?.id])
+  }, [session?.user?.id, passwordVersion])
 
   const fetchProfile = async (userId: string) => {
     const { data, error } = await supabase
@@ -76,7 +76,7 @@ export default function App() {
       .single()
 
     if (data) {
-      passwordVersionRef.current = data.password_changed_at
+      setPasswordVersion(data.password_changed_at)
       setProfile(data)
       setLoading(false)
       return
