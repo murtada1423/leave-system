@@ -14,8 +14,9 @@ CREATE TABLE IF NOT EXISTS profiles (
   role          TEXT NOT NULL CHECK (role IN ('admin', 'employee')),
   email         TEXT,
   days_balance  INT NOT NULL DEFAULT 3,
-  hourly_balance INT NOT NULL DEFAULT 2,
-  created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  hourly_balance     INT NOT NULL DEFAULT 2,
+  password_changed_at TIMESTAMPTZ,
+  created_at         TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Helper function to check admin role (SECURITY DEFINER to avoid RLS recursion)
@@ -224,6 +225,10 @@ BEGIN
 
   UPDATE auth.users
   SET encrypted_password = crypt(new_password, gen_salt('bf'))
+  WHERE id = target_id;
+
+  UPDATE profiles
+  SET password_changed_at = now()
   WHERE id = target_id;
 
   DELETE FROM auth.sessions WHERE user_id = target_id;
